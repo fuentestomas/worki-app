@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "809098418",
+    "project_id": "worki-715c8",
+    "storage_bucket": "worki-715c8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:809098418:android:760efc026ce272caadbdab",
+        "android_client_info": {
+          "package_name": "com.worki"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "809098418-t4sb64ckkj2q8b2vrnjg9rrfnl4c6n67.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.worki",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "809098418-269io6b5kf91ll942vdqbcs9g10kia9j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDjOa8TBTQYtBw-ziDijeL-L0EY8_aO-os"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "809098418-269io6b5kf91ll942vdqbcs9g10kia9j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
