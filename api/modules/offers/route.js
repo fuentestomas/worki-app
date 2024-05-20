@@ -17,7 +17,7 @@ router.post('/', async (req, res) => {
 
 router.get('/', async (req, res) => {
     try {
-        let result = await modelMethods.getAll();
+        let result = await modelMethods.getAll(req.body);
         res.send(result);
     }
     catch (e) {

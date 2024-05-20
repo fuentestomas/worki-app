@@ -20,13 +20,13 @@ class ModelMethods {
         return result;
     };
 
-    getAll(filters, populates) {
-        if (arguments.length == 0) {
-            filters = {};
-            populates = {};
-        }
+    getAll(data) {
+        // if (arguments.length == 0) {
+        //     filters = {};
+        //     populates = {};
+        // }
         
-        let result = model.find()
+        let result = model.find({ userId: data.id })
             .then((result) => {
                 return result;
             });
