@@ -35,7 +35,8 @@ router.post('/', async (req, res) => {
         ]
         data.forEach((offer) => modelMethods.create(offer))
         //let result = await modelMethods.create(req.body);
-        res.status(201).send();
+        console.log('Dummy data inserted')
+        res.status(201).send('Dummy data inserted');
     }
     catch (e) {
         console.log(e);
