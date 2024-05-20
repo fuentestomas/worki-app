@@ -9,7 +9,7 @@ const ModelSchema = new mongoose.Schema(
       },
       title: { type: String },
       description: { type: String },
-      payRate: { type: Number },
+      payRate: { type: String },
     },
     { timestamps: true }
 );

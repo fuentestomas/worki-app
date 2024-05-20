@@ -6,8 +6,36 @@ const modelMethods = new ModelMethods();
 
 router.post('/', async (req, res) => {
     try {
-        let result = await modelMethods.create(req.body);
-        res.status(201).send(result);
+        let data = [
+            {
+                title: 'Se busca mozo',
+                description: 'necesito mozo para el restaurante',
+                payRate: '$1-$100',
+            },
+            {
+                title: 'Necesito barman',
+                description: 'necesito barman para atender la barra',
+                payRate: '$1-$100',
+            },
+            {
+                title: 'Busco recepcionista',
+                description: 'el hotel esta falto de recepcionistas para la temporada',
+                payRate: '$1-$100',
+            },
+            {
+                title: 'Asistente de cocina',
+                description: 'busco asistente de cocina para cubrir una ausencia',
+                payRate: '$1-$100',
+            },
+            {
+                title: 'Atencion al cliente',
+                description: 'busco empleado para el local',
+                payRate: '$1-$100',
+            },
+        ]
+        data.forEach((offer) => modelMethods.create(offer))
+        //let result = await modelMethods.create(req.body);
+        res.status(201).send();
     }
     catch (e) {
         console.log(e);
@@ -17,7 +45,7 @@ router.post('/', async (req, res) => {
 
 router.get('/', async (req, res) => {
     try {
-        let result = await modelMethods.getAll(req.body);
+        let result = await modelMethods.getAll();
         res.send(result);
     }
     catch (e) {
