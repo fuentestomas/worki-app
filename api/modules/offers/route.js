@@ -33,10 +33,14 @@ router.post('/', async (req, res) => {
                 payRate: '$1-$100',
             },
         ]
-        data.forEach((offer) => modelMethods.create(offer))
+        toReturn = [];
+        for (i = 0; i < data.length; i++) {
+            let result = await modelMethods.create(data[i])
+            toReturn.push(result)
+        }
         //let result = await modelMethods.create(req.body);
         console.log('Dummy data inserted')
-        res.status(201).send('Dummy data inserted');
+        res.status(201).send(toReturn);
     }
     catch (e) {
         console.log(e);
