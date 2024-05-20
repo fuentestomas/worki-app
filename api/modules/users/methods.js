@@ -1,8 +1,34 @@
 const model = require('./model');
+const bcrypt = require('bcryptjs');
 
 class ModelMethods {
 
-    create(data) {
+    async login(data) {
+        console.log('email', data.emailAddress)
+        const user = await model.findOne({ emailAddress: data.emailAddress })
+            .then((result) => {
+                console.log('returning')
+                return result;
+            })
+            .catch((e) => {
+                console.log(e);
+            })
+        console.log('user', user)
+        console.log(data.password);
+        console.log(user.password);
+        if (bcrypt.compareSync(data.password, user.password)) {
+            return user
+        }
+        else return HttpError(401, 'Contraseña incorrecta');
+    }
+    
+    async create(data) {
+        const salt = bcrypt.genSaltSync(10);
+        console.log('previous data', data)
+        const hashedPassword = await bcrypt.hash(data.password, salt);
+        
+        data.password = hashedPassword;
+        console.log('hashed', data)
         let result = model.create(data)
             .then((res) => {
                 return res;

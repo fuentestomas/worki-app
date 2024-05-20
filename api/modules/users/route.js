@@ -15,6 +15,17 @@ router.post('/', async (req, res) => {
     }
 })
 
+router.post('/login', async (req, res) => {
+    try {
+        let result = await modelMethods.login(req.body);
+        res.status(201).send(result);
+    }
+    catch (e) {
+        console.log(e);
+        res.send(e);
+    }
+})
+
 router.get('/', async (req, res) => {
     try {
         let result = await modelMethods.getAll();
