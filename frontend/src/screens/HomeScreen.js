@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Button, Colors, Card } from "react-native-ui-lib";
 import { signOutFromGoogle } from "../firebase/googleProvider";
 import {
@@ -10,7 +10,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-  Image
+  Image,
 } from "react-native";
 import { AuthContext } from "../context/AuthContext";
 import restaurant from "../assets/img/restaurant.png";
@@ -19,29 +19,34 @@ import chef from "../assets/img/chef.png";
 import maid from "../assets/img/maid.png";
 import plumber from "../assets/img/plumber.png";
 import cashier from "../assets/img/cashier.png";
-import plus from "../assets/img/plus.png"
+import plus from "../assets/img/plus.png";
+import { getPosts, postCreateNewPost } from "../services/posts";
 
-const Item = ({ item, onPress, backgroundColor, textColor }) => (
-  <TouchableOpacity onPress={onPress} style={[styles.item, { backgroundColor }]}>
-    <Card flex center onPress={() => console.log('pressed')}>
-      <Card.Image
-        source={item.image} 
-        style={styles.cardImage}
+const Item = ({ item, onPress, backgroundColor, textColor, navigation }) => (
+  <TouchableOpacity
+    onPress={onPress}
+    style={[styles.item, { backgroundColor }]}
+  >
+    <Card flex center onPress={() => console.log("pressed")}>
+      <Card.Image source={restaurant} style={styles.cardImage} />
+      <Card.Section
+        content={[{ text: item.title, text70: true, grey10: true }]}
       />
       <Card.Section
-        content={[
-          { text: item.title, text70: true, grey10: true },
-        ]}
-      />
-      <Card.Section
-        content={[
-          { text: item.description, text80: true, grey20: true },
-        ]}
+        content={[{ text: item.description, text80: true, grey20: true }]}
       />
       <Button
         label="Ver más"
         backgroundColor={Colors.blue30}
-        onPress={() => console.log('More Info Pressed')}
+        onPress={() =>{
+          console.log('id home:', item._id.toString());
+          navigation.navigate("StackNavigator", {
+            screen: "PostDescription",
+            params: {
+              id: item._id.toString(),
+            },
+          })}
+        }
         style={styles.cardButton}
       />
     </Card>
@@ -61,6 +66,12 @@ export const HomeScreen = ({ navigation }) => {
   ]);
   const [selectedId, setSelectedId] = useState();
   const [category, setCategory] = useState(null);
+  const [posts, setPosts] = useState({});
+  const [refreshView, setRefreshView] = useState(Math.random());
+
+  useEffect(() => {
+    getData();
+  }, [refreshView]);
 
   const handleSearchTextChange = (text) => {
     setSearchText(text);
@@ -74,7 +85,9 @@ export const HomeScreen = ({ navigation }) => {
   const renderOptionItem = ({ item }) => (
     <TouchableOpacity onPress={() => handleSelectOption(item)}>
       <Text style={styles.optionItem}>{item.label}</Text>
-      <View style={{ width: "100%", backgroundColor: "gray", height: 1 }}></View>
+      <View
+        style={{ width: "100%", backgroundColor: "gray", height: 1 }}
+      ></View>
     </TouchableOpacity>
   );
 
@@ -82,9 +95,23 @@ export const HomeScreen = ({ navigation }) => {
     option.label.toLowerCase().includes(searchText.toLowerCase())
   );
 
+  const handlePostNewPost = async () => {
+    const data = await postCreateNewPost();
+    if (data) {
+      setRefreshView(Math.random());
+    }
+  };
+
+  const getData = async () => {
+    const data = await getPosts();
+    if (data) {
+      setPosts(data);
+    }
+  };
+
   const renderItem = ({ item }) => {
-    const backgroundColor = item.id === selectedId ? 'lightgray' : 'white';
-    const textColor = item.id === selectedId ? 'white' : 'black';
+    const backgroundColor = item.id === selectedId ? "lightgray" : "white";
+    const textColor = item.id === selectedId ? "white" : "black";
 
     return (
       <Item
@@ -92,6 +119,7 @@ export const HomeScreen = ({ navigation }) => {
         onPress={() => setSelectedId(item.id)}
         backgroundColor={backgroundColor}
         textColor={textColor}
+        navigation={navigation}
         fullWidth
       />
     );
@@ -121,28 +149,35 @@ export const HomeScreen = ({ navigation }) => {
               />
             </View>
           </View>
-          <View style={{ width: '100%', alignItems: 'center' }}>
-            <Text style={styles.cardsTitle}>Últimas ofertas laborales</Text> 
+          <View style={{ width: "100%", alignItems: "center" }}>
+            <Text style={styles.cardsTitle}>Últimas ofertas laborales</Text>
             <FlatList
-              data={DATA}
+              data={posts}
               renderItem={renderItem}
-              keyExtractor={item => item.id}
+              keyExtractor={(item) => item.id}
               extraData={selectedId}
               horizontal={true}
             />
-            <Text style={styles.cardsTitle}>Postulaciones</Text> 
+            <Text style={styles.cardsTitle}>Postulaciones</Text>
             <FlatList
               data={POSTULACIONES_DATA}
               renderItem={renderItem}
-              keyExtractor={item => item.id}
+              keyExtractor={(item) => item.id}
               extraData={selectedId}
               horizontal={true}
             />
           </View>
         </View>
-        <View style={{ justifyContent: "flex-end" }}>
-          <Text style={{ color: 'black', fontSize: 24, fontWeight: 'bold', marginTop: 20 }}>
-            Hola {user.name.split(" ")[0]} {`:)`}
+        <View style={{ alignItems: "center", marginVertical: 20 }}>
+          <Text
+            style={{
+              color: "black",
+              fontSize: 24,
+              fontWeight: "bold",
+              marginTop: 20,
+            }}
+          >
+            Hola {user.name.split(" ")[0]}
           </Text>
           <Button
             style={{ width: "50%", marginTop: 20 }}
@@ -154,7 +189,10 @@ export const HomeScreen = ({ navigation }) => {
           />
         </View>
       </ScrollView>
-      <TouchableOpacity style={styles.floatingButton}>
+      <TouchableOpacity
+        style={styles.floatingButton}
+        onPress={handlePostNewPost}
+      >
         <Image source={plus} style={styles.plusIcon} />
       </TouchableOpacity>
     </SafeAreaView>
@@ -174,7 +212,7 @@ const styles = StyleSheet.create({
     padding: 10,
     color: "black",
   },
- 
+
   dropdown: {
     width: "100%",
     maxHeight: 200,
@@ -192,7 +230,7 @@ const styles = StyleSheet.create({
   },
   item: {
     padding: 20,
-    flex:1,
+    flex: 1,
     marginVertical: 8,
     marginHorizontal: 16,
   },
@@ -200,7 +238,7 @@ const styles = StyleSheet.create({
     fontSize: 32,
   },
   cardImage: {
-    width: '100%',
+    width: 250,
     height: 200,
   },
   cardButton: {
@@ -208,68 +246,68 @@ const styles = StyleSheet.create({
   },
   cardsTitle: {
     fontSize: 24,
-    fontWeight: 'bold',
-    marginTop: 20, 
+    fontWeight: "bold",
+    marginTop: 20,
+    color: "black",
   },
   floatingButton: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 20,
     right: 20,
     backgroundColor: Colors.blue30,
     borderRadius: 50,
     width: 50,
     height: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   plusIcon: {
     width: 24,
     height: 24,
-    tintColor: 'white',
+    tintColor: "white",
   },
 });
 
 // Datos de ejemplo para las tarjetas de ofertas laborales
 const DATA = [
   {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-    title: 'Burger in-N-out',
-    description: 'Búsqueda de mozo en distintos turnos.',
-    image: restaurant, 
+    id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
+    title: "Burger in-N-out",
+    description: "Postulación de trabajo.",
+    image: restaurant,
   },
   {
-    id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-    title: 'Restaurante Don Julio',
-    description: 'Búsqueda de chef temporal.',
-    image: chef,
+    id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
+    title: "Restaurante Don Julio",
+    description: "Postulación de trabajo.",
+    image: restaurant,
   },
   {
-    id: '58694a0f-3da1-471f-bd96-145571e29d72',
-    title: 'Hotel Holiday Inn',
-    description: 'Búsqueda de personal de limpieza de habitaciones.',
-    image: maid,
+    id: "58694a0f-3da1-471f-bd96-145571e29d72",
+    title: "Hotel Holiday Inn",
+    description: "Postulación de trabajo.",
+    image: restaurant,
   },
 ];
 
 // Datos de ejemplo para las tarjetas de postulaciones
 const POSTULACIONES_DATA = [
   {
-    id: '1',
-    title: 'Super Mami',
-    description: 'Búsqueda de cajero temporal',
-    image: cashier
+    id: "1",
+    title: "Super Mami",
+    description: "Búsqueda de cajero temporal",
+    image: cashier,
   },
   {
-    id: '2',
-    title: 'Plomero express',
-    description: 'Búsqueda de plomero para el día viernes',
+    id: "2",
+    title: "Plomero express",
+    description: "Búsqueda de plomero para el día viernes",
     image: plumber,
   },
   {
-    id: '3',
-    title: 'Burger King',
-    description: 'Búsqueda de mozo temporal',
+    id: "3",
+    title: "Burger King",
+    description: "Búsqueda de mozo temporal",
     image: restaurant,
   },
 ];
-

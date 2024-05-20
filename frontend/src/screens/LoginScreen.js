@@ -53,7 +53,7 @@ export const LoginScreen = ({ navigation }) => {
         email: data.emailAddress,
       })
       navigation.navigate("TabNavigator", {
-        screen: "HomeScreen",
+        screen: "Home",
       });
     }
   };
