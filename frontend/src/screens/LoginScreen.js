@@ -6,18 +6,22 @@ import LoaderKit from "react-native-loader-kit";
 import working from "../assets/img/working.png";
 // Context
 import { AuthContext } from "../context/AuthContext";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 // OAuth
 import {
   onGoogleSignIn,
   onSilentGoogleSignIn,
 } from "../firebase/googleProvider";
 import { useFocusEffect } from "@react-navigation/native";
+import { postUserLogin } from "../services/user";
 
 export const LoginScreen = ({ navigation }) => {
   const { login } = useContext(AuthContext);
   const [isLoading, setLoading] = useState(true);
   const [isLoginEnabled, setLoginEnabled] = useState(false);
+  const [userLogin, setUserLogin] = useState({});
+
+  useEffect(() => {}, [userLogin]);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -26,6 +30,33 @@ export const LoginScreen = ({ navigation }) => {
       }, 500);
     }, [])
   );
+
+  const onChange = (name, value) => {
+    setUserLogin({
+      ...userLogin,
+      [name]: value,
+    });
+  };
+
+  const onHandleVisibilityLogin = () => {
+    setLoginEnabled(true);
+  };
+
+  const onHandleLogin = async () => {
+    console.log('user:', userLogin);
+    const data = await postUserLogin(userLogin);
+    console.log('data:', data);
+
+    if (data) {
+      login({
+        name: data.fullName,
+        email: data.emailAddress,
+      })
+      navigation.navigate("TabNavigator", {
+        screen: "HomeScreen",
+      });
+    }
+  };
 
   return (
     <View style={{ height: "100%", backgroundColor: "#f5f5f5" }}>
@@ -124,6 +155,7 @@ export const LoginScreen = ({ navigation }) => {
                     paddingLeft: 12,
                     marginVertical: 5,
                   }}
+                  onChangeText={(text) => onChange("emailAddress", text)}
                 />
               </View>
               <View style={{ paddingHorizontal: 25, paddingTop: 10 }}>
@@ -148,6 +180,7 @@ export const LoginScreen = ({ navigation }) => {
                     marginVertical: 5,
                     marginBottom: 30,
                   }}
+                  onChangeText={(text) => onChange("password", text)}
                 />
               </View>
             </View>
@@ -177,7 +210,9 @@ export const LoginScreen = ({ navigation }) => {
               label={"Iniciar sesión"}
               backgroundColor={Colors.grey60}
               size={Button.sizes.large}
-              onPress={() => setLoginEnabled(!isLoginEnabled)}
+              onPress={() =>
+                !isLoginEnabled ? onHandleVisibilityLogin() : onHandleLogin()
+              }
             />
           </View>
           <View

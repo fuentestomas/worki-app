@@ -9,3 +9,13 @@ export const postUserRegister = async (body) => {
       throw error;
     }
   };
+
+  export const postUserLogin = async (body) => {
+    try {
+      const { data } = await client.post('/users/login', body);
+      return data;
+    } catch (error) {
+      console.error(error.message);
+      throw error;
+    }
+  };
