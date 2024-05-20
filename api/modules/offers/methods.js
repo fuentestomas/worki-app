@@ -20,7 +20,7 @@ class ModelMethods {
         return result;
     };
 
-    getAll() {
+    getAll(filters, populates) {
         if (arguments.length == 0) {
             filters = {};
             populates = {};
