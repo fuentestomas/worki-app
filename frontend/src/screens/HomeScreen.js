@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Button, Colors, Card } from "react-native-ui-lib";
-import { signOutFromGoogle } from "../firebase/googleProvider";
 import {
   FlatList,
   SafeAreaView,
@@ -22,78 +21,23 @@ import cashier from "../assets/img/cashier.png";
 import plus from "../assets/img/plus.png";
 import { getPosts, postCreateNewPost } from "../services/posts";
 
-const Item = ({ item, onPress, backgroundColor, textColor, navigation }) => (
-  <TouchableOpacity
-    onPress={onPress}
-    style={[styles.item, { backgroundColor }]}
-  >
-    <Card flex center onPress={() => console.log("pressed")}>
-      <Card.Image source={restaurant} style={styles.cardImage} />
-      <Card.Section
-        content={[{ text: item.title, text70: true, grey10: true }]}
-      />
-      <Card.Section
-        content={[{ text: item.description, text80: true, grey20: true }]}
-      />
-      <Button
-        label="Ver más"
-        backgroundColor={Colors.blue30}
-        onPress={() =>{
-          console.log('id home:', item._id.toString());
-          navigation.navigate("StackNavigator", {
-            screen: "PostDescription",
-            params: {
-              id: item._id.toString(),
-            },
-          })}
-        }
-        style={styles.cardButton}
-      />
-    </Card>
-  </TouchableOpacity>
-);
-
 export const HomeScreen = ({ navigation }) => {
   const { user } = useContext(AuthContext);
   const [searchText, setSearchText] = useState("");
-  const [dropdownOptions, setDropdownOptions] = useState([
-    // { id: 1, label: "Tecnología y Sistemas" },
-    // { id: 2, label: "Marketing" },
-    // { id: 3, label: "Finanzas" },
-    // { id: 4, label: "Educación" },
-    // { id: 5, label: "Entretenimiento" },
-    // { id: 6, label: "Medio ambiente" },
-  ]);
   const [selectedId, setSelectedId] = useState();
   const [category, setCategory] = useState(null);
   const [posts, setPosts] = useState({});
   const [refreshView, setRefreshView] = useState(Math.random());
+  const { role } = user;
 
   useEffect(() => {
     getData();
+    console.log("user:", user);
   }, [refreshView]);
 
   const handleSearchTextChange = (text) => {
     setSearchText(text);
   };
-
-  const handleSelectOption = (option) => {
-    setCategory(option);
-    setSearchText("");
-  };
-
-  const renderOptionItem = ({ item }) => (
-    <TouchableOpacity onPress={() => handleSelectOption(item)}>
-      <Text style={styles.optionItem}>{item.label}</Text>
-      <View
-        style={{ width: "100%", backgroundColor: "gray", height: 1 }}
-      ></View>
-    </TouchableOpacity>
-  );
-
-  const filteredOptions = dropdownOptions.filter((option) =>
-    option.label.toLowerCase().includes(searchText.toLowerCase())
-  );
 
   const handlePostNewPost = async () => {
     const data = await postCreateNewPost();
@@ -112,7 +56,6 @@ export const HomeScreen = ({ navigation }) => {
   const renderItem = ({ item }) => {
     const backgroundColor = item.id === selectedId ? "lightgray" : "white";
     const textColor = item.id === selectedId ? "white" : "black";
-
     return (
       <Item
         item={item}
@@ -125,20 +68,42 @@ export const HomeScreen = ({ navigation }) => {
     );
   };
 
+  // const handleSelectOption = (option) => {
+  //   setCategory(option);
+  //   setSearchText("");
+  // };
+
+  // const renderOptionItem = ({ item }) => (
+  //   <TouchableOpacity onPress={() => handleSelectOption(item)}>
+  //     <Text style={styles.optionItem}>{item.label}</Text>
+  //     <View
+  //       style={{ width: "100%", backgroundColor: "gray", height: 1 }}
+  //     ></View>
+  //   </TouchableOpacity>
+  // );
+
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <ScrollView>
         <View style={{ flex: 1 }}>
-          <View style={{ flex: 1, alignItems: "center" }}>
-            <View style={styles.container}>
-              <TextInput
-                style={styles.input}
-                placeholder="Buscar..."
-                placeholderTextColor={"gray"}
-                onChangeText={handleSearchTextChange}
-                value={searchText}
-              />
-              <FlatList
+          {role === "person" && (
+            <View
+              style={{
+                flex: 1,
+                alignItems: "center",
+                marginTop: 25,
+                marginBottom: 10,
+              }}
+            >
+              <View style={styles.container}>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Buscar..."
+                  placeholderTextColor={"gray"}
+                  onChangeText={handleSearchTextChange}
+                  value={searchText}
+                />
+                {/* <FlatList
                 data={filteredOptions}
                 renderItem={renderOptionItem}
                 keyExtractor={(item) => item.id.toString()}
@@ -146,58 +111,56 @@ export const HomeScreen = ({ navigation }) => {
                   styles.dropdown,
                   { display: searchText ? "flex" : "none" },
                 ]}
-              />
+              /> */}
+              </View>
             </View>
-          </View>
-          <View style={{ width: "100%", alignItems: "center" }}>
-            <Text style={styles.cardsTitle}>Últimas ofertas laborales</Text>
+          )}
+
+          <View
+            style={{
+              width: "100%",
+              alignItems: "center",
+              marginHorizontal: 10,
+              marginBottom: 40,
+            }}
+          >
+            <View>
+              <Text style={styles.cardsTitle}>Últimas ofertas laborales</Text>
+            </View>
             <FlatList
               data={posts}
               renderItem={renderItem}
-              keyExtractor={(item) => item.id}
+              keyExtractor={(item, index) => index}
               extraData={selectedId}
               horizontal={true}
             />
-            <Text style={styles.cardsTitle}>Postulaciones</Text>
-            <FlatList
-              data={POSTULACIONES_DATA}
-              renderItem={renderItem}
-              keyExtractor={(item) => item.id}
-              extraData={selectedId}
-              horizontal={true}
-            />
+            {role === "worker" && (
+              <View style={{ alignItems: "center" }}>
+                <Text style={styles.cardsTitle}>Postulaciones</Text>
+                <FlatList
+                  data={POSTULACIONES_DATA}
+                  renderItem={renderItem}
+                  keyExtractor={(item, index) => index}
+                  extraData={selectedId}
+                  horizontal={true}
+                />
+              </View>
+            )}
           </View>
         </View>
-        <View style={{ alignItems: "center", marginVertical: 20 }}>
-          <Text
-            style={{
-              color: "black",
-              fontSize: 24,
-              fontWeight: "bold",
-              marginTop: 20,
-            }}
-          >
-            Hola {user.name.split(" ")[0]}
-          </Text>
-          <Button
-            style={{ width: "50%", marginTop: 20 }}
-            labelStyle={{ fontSize: 20, color: "white" }}
-            label={"Cerrar sesión"}
-            backgroundColor={Colors.blue30}
-            size={Button.sizes.large}
-            onPress={() => signOutFromGoogle(navigation)}
-          />
-        </View>
       </ScrollView>
-      <TouchableOpacity
-        style={styles.floatingButton}
-        onPress={handlePostNewPost}
-      >
-        <Image source={plus} style={styles.plusIcon} />
-      </TouchableOpacity>
+      {(role === "person" || role === "business") && (
+        <TouchableOpacity
+          style={styles.floatingButton}
+          onPress={handlePostNewPost}
+        >
+          <Image source={plus} style={styles.plusIcon} />
+        </TouchableOpacity>
+      )}
     </SafeAreaView>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -211,6 +174,8 @@ const styles = StyleSheet.create({
     borderColor: "gray",
     padding: 10,
     color: "black",
+    backgroundColor: "white",
+    borderRadius: 8,
   },
 
   dropdown: {
@@ -229,25 +194,29 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   item: {
-    padding: 20,
     flex: 1,
     marginVertical: 8,
-    marginHorizontal: 16,
+    marginHorizontal: 10,
+    borderRadius: 13,
+    elevation: 2,
   },
   title: {
     fontSize: 32,
   },
   cardImage: {
-    width: 250,
-    height: 200,
+    width: "100%",
+    minWidth: 300,
+    height: 140,
   },
   cardButton: {
-    marginTop: 10,
+    width: "100%",
+    borderRadius: 5,
   },
   cardsTitle: {
     fontSize: 24,
     fontWeight: "bold",
     marginTop: 20,
+    marginBottom: 5,
     color: "black",
   },
   floatingButton: {
@@ -268,29 +237,65 @@ const styles = StyleSheet.create({
   },
 });
 
-// Datos de ejemplo para las tarjetas de ofertas laborales
-const DATA = [
-  {
-    id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
-    title: "Burger in-N-out",
-    description: "Postulación de trabajo.",
-    image: restaurant,
-  },
-  {
-    id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
-    title: "Restaurante Don Julio",
-    description: "Postulación de trabajo.",
-    image: restaurant,
-  },
-  {
-    id: "58694a0f-3da1-471f-bd96-145571e29d72",
-    title: "Hotel Holiday Inn",
-    description: "Postulación de trabajo.",
-    image: restaurant,
-  },
-];
+const Item = ({ item, onPress, backgroundColor, textColor, navigation }) => (
+  <View style={[styles.item]}>
+    <Card flex style={{ width: "100%", maxWidth: 334 }}>
+      <Card.Image source={restaurant} style={styles.cardImage} />
+      <View
+        style={{
+          width: 90,
+          height: 35,
+          backgroundColor: Colors.blue30,
+          borderRadius: 5,
+          alignContent: "center",
+          justifyContent: "center",
+          marginLeft: 15,
+          marginTop: 15,
+          position: "absolute",
+        }}
+      >
+        <Text style={{ textAlign: "center", color: "white", fontSize: 14 }}>
+          $3k - $5k
+        </Text>
+      </View>
+      <View style={{ height: 100, padding: 12, width: "100%" }}>
+        <Card.Section
+          content={[{ text: item.title, text65BL: true, black: true }]}
+          style={{ width: "100%" }}
+        />
+        <Card.Section
+          content={[{ text: item.description, text80: true, grey20: true }]}
+          style={{ width: "100%", marginTop: 6 }}
+        />
+      </View>
+      <View style={{ width: "100%", alignItems: "flex-end" }}>
+        <View
+          style={{
+            width: 145,
+            marginRight: 15,
+            marginBottom: 15,
+          }}
+        >
+          <Button
+            label="Ver publicación"
+            backgroundColor={Colors.blue30}
+            labelStyle={{ fontSize: 14 }}
+            onPress={() => {
+              navigation.navigate("StackNavigator", {
+                screen: "PostDescription",
+                params: {
+                  id: item._id.toString(),
+                },
+              });
+            }}
+            style={styles.cardButton}
+          />
+        </View>
+      </View>
+    </Card>
+  </View>
+);
 
-// Datos de ejemplo para las tarjetas de postulaciones
 const POSTULACIONES_DATA = [
   {
     id: "1",

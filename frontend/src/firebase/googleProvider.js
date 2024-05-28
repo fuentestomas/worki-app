@@ -1,5 +1,12 @@
 import auth from "@react-native-firebase/auth";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {
+  clearAllLocalStorage,
+  clearLocalStorage,
+  loadFromLocalStorage,
+  saveToLocalStorage,
+} from "../hooks/useLocalStorage";
 
 GoogleSignin.configure({
   webClientId:
@@ -42,7 +49,7 @@ export const signInWithGoogle = async () => {
 export const onGoogleSignIn = async (login, navigation) => {
   const result = await signInWithGoogle();
   if (result.ok) {
-    login({
+    const authObj = {
       // Token
       token: result.idToken,
       // User info
@@ -50,9 +57,13 @@ export const onGoogleSignIn = async (login, navigation) => {
       email: result.email,
       name: result.displayName,
       photo: result.photoURL,
-    });
+    };
+
+    login(authObj);
+    saveToLocalStorage("auth", authObj);
+
     navigation.navigate("TabNavigator", {
-      screen: "HomeScreen",
+      screen: "Home",
     });
     console.log("Inicié sesion");
   } else {
@@ -62,8 +73,13 @@ export const onGoogleSignIn = async (login, navigation) => {
 
 export const signOutFromGoogle = async (navigation) => {
   try {
-    await auth().signOut();
-    await GoogleSignin.signOut();
+    const currentUser = auth().currentUser;
+    if (currentUser) {
+      await auth().signOut();
+      await GoogleSignin.signOut();
+    } else {
+      await clearAllLocalStorage();
+    }
     navigation.navigate("StackNavigator", {
       screen: "LoginScreen",
     });
@@ -105,23 +121,38 @@ export const silentGoogleSignIn = async () => {
   }
 };
 
-export const onSilentGoogleSignIn = (login, navigation, setLoading) => {
-  silentGoogleSignIn().then(async (result) => {
-    if (result.ok) {
-      login({
-        // Token
-        token: result.idToken,
-        // User info
-        uid: result.uid,
-        email: result.email,
-        name: result.displayName,
-        photo: result.photoURL,
-      });
-      navigation.navigate("TabNavigator", {
-        screen: "HomeScreen",
-      });
-    } else {
-      setLoading(false);
-    }
-  });
+export const onSilentGoogleSignIn = async (login, navigation, setLoading) => {
+  const user = await loadFromLocalStorage("auth");
+  console.log("user:", user);
+  if (user) {
+    const userObj = user;
+    login(userObj);
+
+    navigation.navigate("TabNavigator", {
+      screen: "Home",
+    });
+  } else {
+    silentGoogleSignIn().then(async (result) => {
+      if (result.ok) {
+        const userObj = {
+          // Token
+          token: result.idToken,
+          // User info
+          uid: result.uid,
+          email: result.email,
+          name: result.displayName,
+          photo: result.photoURL,
+        };
+
+        login(userObj);
+        saveToLocalStorage("auth", userObj);
+
+        navigation.navigate("TabNavigator", {
+          screen: "Home",
+        });
+      } else {
+        setLoading(false);
+      }
+    });
+  }
 };

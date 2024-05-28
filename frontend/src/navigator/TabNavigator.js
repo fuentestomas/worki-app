@@ -8,6 +8,7 @@ import userIcon from "../assets/img/user.png"
 import { ChatsScreen } from "../screens/ChatsScreen";
 import { Image } from "react-native";
 import { Colors } from "react-native-ui-lib";
+import ProfileScreen from "../screens/ProfileScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -41,8 +42,7 @@ export const TabNavigator = () => {
     >
       <Tab.Screen name="Chats" component={ChatsScreen} />
       <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Mi Perfil" component={HomeScreen} />
-
+      <Tab.Screen name="Mi Perfil" component={ProfileScreen} />
     </Tab.Navigator>
   );
 };

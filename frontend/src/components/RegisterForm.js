@@ -3,6 +3,7 @@ import { SafeAreaView, Text, TextInput, ScrollView, View } from "react-native";
 import { Button, Colors, Switch } from "react-native-ui-lib";
 import { postUserRegister } from "../services/user";
 import { AuthContext } from "../context/AuthContext";
+import { saveToLocalStorage } from "../hooks/useLocalStorage";
 
 export const RegisterForm = ({ role, navigation, initialUserRegister }) => {
   const { login } = useContext(AuthContext);
@@ -34,16 +35,20 @@ export const RegisterForm = ({ role, navigation, initialUserRegister }) => {
   };
 
   const validateLogin = (data) => {
-    login({
+    const userObj = {
       // Token
       // token: result.idToken,
       // User info
       // uid: result.uid,
       email: data.emailAddress,
       name: data.fullName,
-    });
+    }
+
+    login(userObj);
+    saveToLocalStorage("auth", userObj);
+
     navigation.navigate("TabNavigator", {
-      screen: "HomeScreen",
+      screen: "Home",
     });
   };
 

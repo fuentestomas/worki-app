@@ -44,7 +44,7 @@ export const FormWorkerScreen = ({ role, navigation, route }) => {
       name: data.fullName,
     });
     navigation.navigate("TabNavigator", {
-      screen: "HomeScreen",
+      screen: "Home",
     });
   };
 

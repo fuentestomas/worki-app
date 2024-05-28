@@ -14,6 +14,9 @@ import {
 } from "../firebase/googleProvider";
 import { useFocusEffect } from "@react-navigation/native";
 import { postUserLogin } from "../services/user";
+import { saveToLocalStorage } from "../hooks/useLocalStorage";
+import back from "../assets/img/back.png";
+import { TouchableOpacity } from "react-native";
 
 export const LoginScreen = ({ navigation }) => {
   const { login } = useContext(AuthContext);
@@ -25,8 +28,9 @@ export const LoginScreen = ({ navigation }) => {
 
   useFocusEffect(
     React.useCallback(() => {
-      setTimeout(() => {
-        onSilentGoogleSignIn(login, navigation, setLoading);
+      setLoginEnabled(false);
+      setTimeout(async () => {
+        await onSilentGoogleSignIn(login, navigation, setLoading);
       }, 500);
     }, [])
   );
@@ -43,15 +47,17 @@ export const LoginScreen = ({ navigation }) => {
   };
 
   const onHandleLogin = async () => {
-    console.log('user:', userLogin);
     const data = await postUserLogin(userLogin);
-    console.log('data:', data);
+
+    const authObj = {
+      name: data.fullName,
+      email: data.emailAddress,
+      role: data.roles[0],
+    };
 
     if (data) {
-      login({
-        name: data.fullName,
-        email: data.emailAddress,
-      })
+      login(authObj);
+      await saveToLocalStorage("auth", authObj);
       navigation.navigate("TabNavigator", {
         screen: "Home",
       });
@@ -119,69 +125,87 @@ export const LoginScreen = ({ navigation }) => {
           )}
           {isLoginEnabled && (
             <View
-              style={{
-                width: "80%",
-                backgroundColor: "white",
-                borderRadius: 15,
-                marginTop: isLoginEnabled ? 229 : 20,
-                marginVertical: 20,
-                shadowColor: "#e7e7e7",
-                elevation: 6,
-              }}
+              style={{ width: "80%", marginTop: isLoginEnabled ? 149 : 20 }}
             >
-              <View style={{ marginTop: 20, marginLeft: 22 }}>
-                <Text style={{ fontSize: 20, color: "black" }}>
-                  Iniciar sesión
-                </Text>
-              </View>
-              <View style={{ paddingHorizontal: 25, paddingTop: 15 }}>
-                <Text
-                  style={{ paddingLeft: 3, color: "black", fontWeight: 600 }}
-                >
-                  E-Mail
-                </Text>
-                <TextInput
-                  placeholder="worki@gmail.com"
-                  keyboardType="email-address"
-                  style={{
-                    width: "100%",
-                    height: 50,
-                    borderColor: "gray",
-                    borderRadius: 10,
-                    backgroundColor: "#f5f5f5",
-                    paddingHorizontal: 10,
-                    paddingHorizontal: 2,
-                    fontSize: 15,
-                    paddingLeft: 12,
-                    marginVertical: 5,
-                  }}
-                  onChangeText={(text) => onChange("emailAddress", text)}
-                />
-              </View>
-              <View style={{ paddingHorizontal: 25, paddingTop: 10 }}>
-                <Text
-                  style={{ paddingLeft: 3, color: "black", fontWeight: 600 }}
-                >
-                  Contraseña
-                </Text>
-                <TextInput
-                  placeholder="********"
-                  secureTextEntry={true}
-                  style={{
-                    width: "100%",
-                    height: 50,
-                    borderColor: "gray",
-                    borderRadius: 10,
-                    backgroundColor: "#f5f5f5",
-                    paddingHorizontal: 10,
-                    paddingHorizontal: 2,
-                    fontSize: 15,
-                    paddingLeft: 12,
-                    marginVertical: 5,
-                    marginBottom: 30,
-                  }}
-                  onChangeText={(text) => onChange("password", text)}
-                />
+              <TouchableOpacity onPress={() => setLoginEnabled(false)}>
+                <View style={{ width: 25, height: 80 }}>
+                  <Image
+                    style={{
+                      resizeMode: "contain",
+                      width: "100%",
+                      height: "100%",
+                    }}
+                    source={back}
+                  />
+                </View>
+              </TouchableOpacity>
+              <View
+                style={{
+                  backgroundColor: "white",
+                  borderRadius: 15,
+                  marginBottom: 20,
+                  shadowColor: "#e7e7e7",
+                  elevation: 6,
+                }}
+              >
+                <View style={{ marginTop: 20, marginLeft: 22 }}>
+                  <Text style={{ fontSize: 20, color: "black" }}>
+                    Iniciar sesión
+                  </Text>
+                </View>
+                <View style={{ paddingHorizontal: 25, paddingTop: 15 }}>
+                  <Text
+                    style={{ paddingLeft: 3, color: "black", fontWeight: 600 }}
+                  >
+                    E-Mail
+                  </Text>
+                  <TextInput
+                    placeholder="worki@gmail.com"
+                    placeholderTextColor={"gray"}
+                    keyboardType="email-address"
+                    style={{
+                      width: "100%",
+                      height: 50,
+                      color: "black",
+                      borderColor: "gray",
+                      borderRadius: 10,
+                      backgroundColor: "#f5f5f5",
+                      paddingHorizontal: 10,
+                      paddingHorizontal: 2,
+                      fontSize: 15,
+                      paddingLeft: 12,
+                      marginVertical: 5,
+                    }}
+                    onChangeText={(text) => onChange("emailAddress", text)}
+                  />
+                </View>
+                <View style={{ paddingHorizontal: 25, paddingTop: 10 }}>
+                  <Text
+                    style={{ paddingLeft: 3, color: "black", fontWeight: 600 }}
+                  >
+                    Contraseña
+                  </Text>
+                  <TextInput
+                    placeholder="********"
+                    placeholderTextColor={"gray"}
+                    secureTextEntry={true}
+                    style={{
+                      width: "100%",
+                      height: 50,
+                      color: "black",
+                      borderColor: "gray",
+                      borderRadius: 10,
+                      backgroundColor: "#f5f5f5",
+                      paddingHorizontal: 10,
+                      paddingHorizontal: 2,
+                      fontSize: 15,
+                      paddingLeft: 12,
+                      marginVertical: 5,
+                      marginBottom: 30,
+                    }}
+                    onChangeText={(text) => onChange("password", text)}
+                  />
+                </View>
               </View>
             </View>
           )}
