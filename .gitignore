@@ -4,13 +4,9 @@ frontend/node_modules
 frontend/package-lock.json
 frontend/android/app/build/
 frontend/android/.gradle/
-frontend/android/build.gradle
-frontend/android/gradlew
-frontend/android/gradlew.bat
 frontend/ios/build/
 frontend/ios/Podfile.lock
 frontend/ios/Pods
-frontend/android/gradlew
 frontend/ios/Pods
 frontend/node_modules
 frontend/android/.idea
