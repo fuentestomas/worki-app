@@ -2,9 +2,9 @@ export let workerRegister = {
     fullName: "",
     emailAddress: "",
     password: "",
-    roles: ["business"],
+    roles: ["worker"],
     phoneNumber: "",
-    address: "",
+    addresses: [""],
     description: "",
     avgPayRate: "",
     category: "",
@@ -15,9 +15,9 @@ export const backupWorkerRegister = {
     fullName: "",
     emailAddress: "",
     password: "",
-    roles: ["business"],
+    roles: ["worker"],
     phoneNumber: "",
-    address: "",
+    addresses: [""],
     description: "",
     avgPayRate: "",
     category: "",
@@ -30,7 +30,7 @@ export let particularRegister = {
     password: "",
     roles: ["person"],
     phoneNumber: "",
-    address: "",
+    addresses: [""],
 }
 
 export const backupParticularRegister = {
@@ -39,7 +39,7 @@ export const backupParticularRegister = {
     password: "",
     roles: ["person"],
     phoneNumber: "",
-    address: "",
+    addresses: [""],
 }
 
 export let companyRegister = {
@@ -48,7 +48,7 @@ export let companyRegister = {
     password: "",
     roles: ["business"],
     phoneNumber: "",
-    address: "",
+    addresses: [""],
     description: "",
     avgPayRate: "",
     category: "",
@@ -60,7 +60,7 @@ export const backupCompanyRegister = {
     password: "",
     roles: ["business"],
     phoneNumber: "",
-    address: "",
+    addresses: [""],
     description: "",
     avgPayRate: "",
     category: "",

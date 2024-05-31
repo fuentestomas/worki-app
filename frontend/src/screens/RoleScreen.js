@@ -2,28 +2,29 @@
 import { Text, TouchableOpacity, View, Image } from "react-native";
 import { Colors } from "react-native-ui-lib";
 import back from "../assets/img/back.png";
-import { useEffect, useState } from "react";
-import { workerRegister, particularRegister, companyRegister, resetData } from "../constants/userRegister";
+import { useEffect } from "react";
+import {
+  workerRegister,
+  particularRegister,
+  companyRegister,
+  resetData,
+} from "../constants/userRegister";
 
 export const RoleScreen = ({ navigation }) => {
-
   useEffect(() => {
     resetData();
   }, []);
 
-
-  const onRoleType = (role, userRegister) => {
+  const onRoleType = (role) => {
     if (role === "worker") {
-      userRegister = workerRegister;
+      return workerRegister;
     } else if (role === "person") {
-      userRegister = particularRegister;
-    }else {
-      userRegister = companyRegister;
+      return particularRegister;
     }
-  }
+    return (userRegister = companyRegister);
+  };
   const navigateToRegisterScreen = (role) => {
-    let userRegister;
-    onRoleType(role, userRegister);
+    let userRegister = onRoleType(role);
     navigation.navigate("RegisterScreen", {
       role,
       navigation,
@@ -54,7 +55,7 @@ export const RoleScreen = ({ navigation }) => {
               padding: 15,
               marginVertical: 20,
             }}
-            onPress={() => navigateToRegisterScreen('worker')}
+            onPress={() => navigateToRegisterScreen("worker")}
           >
             <View>
               <Text
@@ -71,7 +72,7 @@ export const RoleScreen = ({ navigation }) => {
               padding: 15,
               marginVertical: 20,
             }}
-            onPress={() => navigateToRegisterScreen('person')}
+            onPress={() => navigateToRegisterScreen("person")}
           >
             <View>
               <Text
@@ -88,7 +89,7 @@ export const RoleScreen = ({ navigation }) => {
               padding: 15,
               marginVertical: 20,
             }}
-            onPress={() => navigateToRegisterScreen('company')}
+            onPress={() => navigateToRegisterScreen("company")}
           >
             <View>
               <Text

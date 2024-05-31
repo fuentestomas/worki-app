@@ -50,6 +50,7 @@ export const LoginScreen = ({ navigation }) => {
     const data = await postUserLogin(userLogin);
 
     const authObj = {
+      id: data._id,
       name: data.fullName,
       email: data.emailAddress,
       role: data.roles[0],

@@ -40,8 +40,10 @@ export const RegisterForm = ({ role, navigation, initialUserRegister }) => {
       // token: result.idToken,
       // User info
       // uid: result.uid,
+      id: data._id,
       email: data.emailAddress,
       name: data.fullName,
+      role: data.roles[0],
     }
 
     login(userObj);
