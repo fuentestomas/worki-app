@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Button, Colors, Card } from "react-native-ui-lib";
+import { Button, Colors, Card, Icon } from "react-native-ui-lib";
 import {
   FlatList,
   SafeAreaView,
@@ -19,6 +19,9 @@ import maid from "../assets/img/maid.png";
 import plumber from "../assets/img/plumber.png";
 import cashier from "../assets/img/cashier.png";
 import plus from "../assets/img/plus.png";
+import calendar from "../assets/img/calendar-2.png";
+import pin from "../assets/img/pin.png";
+import clock from "../assets/img/clock.png";
 import { getPosts, postCreateNewPost } from "../services/posts";
 
 export const HomeScreen = ({ navigation }) => {
@@ -49,6 +52,7 @@ export const HomeScreen = ({ navigation }) => {
   const getData = async () => {
     const data = await getPosts();
     if (data) {
+      console.log("data:", data);
       setPosts(data);
     }
   };
@@ -86,12 +90,12 @@ export const HomeScreen = ({ navigation }) => {
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <ScrollView>
         <View style={{ flex: 1 }}>
-          {role === "person" && (
+          {role === "worker" && (
             <View
               style={{
                 flex: 1,
                 alignItems: "center",
-                marginTop: 25,
+                marginTop: 15,
                 marginBottom: 10,
               }}
             >
@@ -116,17 +120,17 @@ export const HomeScreen = ({ navigation }) => {
             </View>
           )}
 
+          <View style={{ alignItems: "center" }}>
+            <Text style={styles.cardsTitle}>Últimas ofertas laborales</Text>
+          </View>
           <View
             style={{
               width: "100%",
               alignItems: "center",
               marginHorizontal: 10,
-              marginBottom: 40,
+              marginBottom: 30,
             }}
           >
-            <View>
-              <Text style={styles.cardsTitle}>Últimas ofertas laborales</Text>
-            </View>
             <FlatList
               data={posts}
               renderItem={renderItem}
@@ -134,19 +138,29 @@ export const HomeScreen = ({ navigation }) => {
               extraData={selectedId}
               horizontal={true}
             />
-            {role === "worker" && (
-              <View style={{ alignItems: "center" }}>
-                <Text style={styles.cardsTitle}>Postulaciones</Text>
-                <FlatList
-                  data={POSTULACIONES_DATA}
-                  renderItem={renderItem}
-                  keyExtractor={(item, index) => index}
-                  extraData={selectedId}
-                  horizontal={true}
-                />
-              </View>
-            )}
           </View>
+
+          <View style={{ alignItems: "center" }}>
+            <Text style={styles.cardsTitle}>Postulaciones</Text>
+          </View>
+          {role === "worker" && (
+            <View
+              style={{
+                width: "100%",
+                alignItems: "center",
+                marginHorizontal: 10,
+                marginBottom: 40,
+              }}
+            >
+              <FlatList
+                data={POSTULACIONES_DATA}
+                renderItem={renderItem}
+                keyExtractor={(item, index) => index}
+                extraData={selectedId}
+                horizontal={true}
+              />
+            </View>
+          )}
         </View>
       </ScrollView>
       {(role === "person" || role === "business") && (
@@ -165,7 +179,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: "70%",
-    marginTop: 20,
+    marginVertical: 20,
+    marginTop: 10,
     marginHorizontal: 10,
   },
   input: {
@@ -211,13 +226,13 @@ const styles = StyleSheet.create({
   cardButton: {
     width: "100%",
     borderRadius: 5,
+    fontFamily: "Avenir-Medium",
   },
   cardsTitle: {
     fontSize: 24,
-    fontWeight: "bold",
-    marginTop: 20,
     marginBottom: 5,
     color: "black",
+    fontFamily: "Avenir-Medium",
   },
   floatingButton: {
     position: "absolute",
@@ -239,7 +254,7 @@ const styles = StyleSheet.create({
 
 const Item = ({ item, onPress, backgroundColor, textColor, navigation }) => (
   <View style={[styles.item]}>
-    <Card flex style={{ width: "100%", maxWidth: 334 }}>
+    <Card flex style={{ width: "100%", maxWidth: 300, minHeight: 300 }}>
       <Card.Image source={restaurant} style={styles.cardImage} />
       <View
         style={{
@@ -254,19 +269,104 @@ const Item = ({ item, onPress, backgroundColor, textColor, navigation }) => (
           position: "absolute",
         }}
       >
-        <Text style={{ textAlign: "center", color: "white", fontSize: 14 }}>
-          $3k - $5k
+        <Text
+          style={{
+            textAlign: "center",
+            color: "white",
+            fontSize: 14,
+            fontFamily: "Avenir-Medium",
+          }}
+        >
+          {item.payRate || "Sin info"}
         </Text>
       </View>
       <View style={{ height: 100, padding: 12, width: "100%" }}>
-        <Card.Section
-          content={[{ text: item.title, text65BL: true, black: true }]}
-          style={{ width: "100%" }}
-        />
-        <Card.Section
-          content={[{ text: item.description, text80: true, grey20: true }]}
-          style={{ width: "100%", marginTop: 6 }}
-        />
+        <View style={{ width: "100%" }}>
+          <Text
+            style={{
+              color: "black",
+              fontFamily: "Avenir-Black",
+              fontSize: 18,
+              marginVertical: -5,
+            }}
+          >
+            {item.title}
+          </Text>
+        </View>
+        <View
+          style={{ marginTop: 5, flexDirection: "row", alignItems: "center" }}
+        >
+          <Icon source={pin} size={14} tintColor={Colors.grey40} />
+          <Text
+            style={{
+              color: Colors.grey30,
+              paddingHorizontal: 4,
+              fontSize: 12.5,
+              fontFamily: "Avenir-Medium",
+            }}
+          >
+            Av. Sabattini 3605, Córdoba, Argentina
+          </Text>
+        </View>
+        <View
+          style={{
+            width: "100%",
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
+        >
+          <View
+            style={{
+              marginTop: 13,
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <Icon source={calendar} size={16} tintColor={Colors.blue30} />
+            <Text
+              style={{
+                color: "black",
+                paddingHorizontal: 6,
+                fontSize: 11,
+                fontFamily: "Avenir-Medium",
+              }}
+            >
+              15-06-2024 - 15-07-2024
+            </Text>
+          </View>
+          <View
+            style={{
+              marginTop: 13,
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <Icon source={clock} size={16} tintColor={Colors.blue30} />
+            <Text
+              style={{
+                color: "black",
+                paddingHorizontal: 6,
+                fontSize: 11,
+                fontFamily: "Avenir-Medium",
+              }}
+            >
+              09:00 - 18:00
+            </Text>
+          </View>
+        </View>
+        <View style={{ width: "100%", marginTop: 15, marginLeft: 2 }}>
+          <Text
+            style={{
+              color: Colors.grey20,
+              fontSize: 13,
+              fontFamily: "Avenir-Medium",
+            }}
+            numberOfLines={2}
+            ellipsizeMode="tail"
+          >
+            {item.description}
+          </Text>
+        </View>
       </View>
       <View style={{ width: "100%", alignItems: "flex-end" }}>
         <View
@@ -275,22 +375,7 @@ const Item = ({ item, onPress, backgroundColor, textColor, navigation }) => (
             marginRight: 15,
             marginBottom: 15,
           }}
-        >
-          <Button
-            label="Ver publicación"
-            backgroundColor={Colors.blue30}
-            labelStyle={{ fontSize: 14 }}
-            onPress={() => {
-              navigation.navigate("StackNavigator", {
-                screen: "PostDescription",
-                params: {
-                  id: item._id.toString(),
-                },
-              });
-            }}
-            style={styles.cardButton}
-          />
-        </View>
+        ></View>
       </View>
     </Card>
   </View>
@@ -300,19 +385,25 @@ const POSTULACIONES_DATA = [
   {
     id: "1",
     title: "Super Mami",
-    description: "Búsqueda de cajero temporal",
+    payRate: "$2k - $2.5k",
+    description:
+      "Estamos buscando un cajero dinámico y orientado al cliente para unirse a nuestro equipo. El candidato ideal debe tener excelentes habilidades de servicio al cliente, ser eficiente en el manejo de transacciones y poseer una actitud positiva y profesional.",
     image: cashier,
   },
   {
     id: "2",
-    title: "Plomero express",
-    description: "Búsqueda de plomero para el día viernes",
+    title: "Plomero",
+    payRate: "$3k - $4k",
+    description:
+      "Se necesita un plomero con experiencia y compromiso para unirse a nuestro equipo. El candidato ideal debe poseer conocimientos sólidos en la instalación, mantenimiento y reparación de sistemas de plomería en entornos residenciales y comerciales, así como una actitud profesional y orientada al cliente.",
     image: plumber,
   },
   {
     id: "3",
     title: "Burger King",
-    description: "Búsqueda de mozo temporal",
+    payRate: "$1.5k - $2k",
+    description:
+      "Se requiere un empleado motivado y entusiasta para unirse al equipo de Burger King. El candidato ideal debe tener excelentes habilidades de atención al cliente, capacidad para trabajar en equipo y un compromiso con la calidad y la limpieza.",
     image: restaurant,
   },
 ];

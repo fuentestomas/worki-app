@@ -8,29 +8,29 @@ router.post('/', async (req, res) => {
     try {
         let data = [
             {
-                title: 'Se busca mozo',
-                description: 'necesito mozo para el restaurante',
-                payRate: '$1-$100',
+                title: 'Mozo',
+                description: 'Estamos en busqueda de un Mozo para cubrir en sede Nueva Córdoba. Para aplicar al puesto se solicita 2 años de experiencia comprobable (excluyente).',
+                payRate: '$2k - $5k',
             },
             {
-                title: 'Necesito barman',
-                description: 'necesito barman para atender la barra',
-                payRate: '$1-$100',
+                title: 'Barman',
+                description: 'Estas en búsqueda de tu primer experiencia como Barman? Cadiz Club te abre las puertas. Buscamos una persona apasionada por aprender y trabajar.',
+                payRate: '$2k - $3k',
             },
             {
-                title: 'Busco recepcionista',
-                description: 'el hotel esta falto de recepcionistas para la temporada',
-                payRate: '$1-$100',
+                title: 'Recepcionista',
+                description: 'Te ofrecemos la oportunidad de trabajar en una de las cadenas de  hoteles más grandes de Argentina. Luxor Hotel está en búsqueda de un/a recepcionista. Puesto fulltime de Luneas a Viernes 09:00hs a 18:00hs.',
+                payRate: '$1.5k - $2k',
             },
             {
-                title: 'Asistente de cocina',
-                description: 'busco asistente de cocina para cubrir una ausencia',
-                payRate: '$1-$100',
+                title: 'Asistente de Cocina',
+                description: 'Nos encontramos en búsqueda de un asistente de cocina con ganas de aprender y crecer en el rubro. Somos un restaurante con mas de 100 años. ',
+                payRate: '$3k - $3.5k',
             },
             {
-                title: 'Atencion al cliente',
-                description: 'busco empleado para el local',
-                payRate: '$1-$100',
+                title: 'Atencion al Cliente',
+                description: 'Tenemos una oportunidad dentro de la Dirección de Negocios y Tecnología, ya que buscamos un Category Manager Sr que va a trabajar en:\n\nTenemos una oportunidad dentro de la Dirección de Negocios y Tecnología, ya que buscamos un Category Manager Sr que va a trabajar en:\n\nTenemos una oportunidad para vos! Postulate como atención al cliente y unite a una empresa que busca el crecimiento profesional de nuestros trabajadores.',
+                payRate: '$2k - $2.5k',
             },
         ]
         toReturn = [];
