@@ -1,10 +1,11 @@
 const model = require('./model');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 class ModelMethods {
 
     async login(data) {
-        const user = await model.findOne({ emailAddress: data.emailAddress })
+        let user = await model.findOne({ emailAddress: data.emailAddress }).lean()
             .then((result) => {
                 return result;
             })
@@ -13,6 +14,8 @@ class ModelMethods {
             })
 
         if (user && bcrypt.compareSync(data.password, user.password)) {
+            const token = jwt.sign({ id: user._id }, 'secret', { expiresIn: '1y' });
+            user.token = token;
             return user
         }
         else {
