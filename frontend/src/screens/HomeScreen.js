@@ -156,7 +156,7 @@ export const HomeScreen = ({ navigation }) => {
       {(role === "person" || role === "business") && (
         <TouchableOpacity
           style={styles.floatingButton}
-          onPress={navigation.navigate("StackNavigator", {
+          onPress={() => navigation.navigate("StackNavigator", {
             screen: "FormPost",
           })}
         >
