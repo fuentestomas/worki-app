@@ -15,6 +15,17 @@ router.post('/', async (req, res) => {
     }
 })
 
+router.post('/register', async (req, res) => {
+    try {
+        let result = await modelMethods.register(req.body);
+        res.status(201).send(result);
+    }
+    catch (e) {
+        console.log(e);
+        res.sendStatus(400);
+    }
+})
+
 router.post('/login', async (req, res) => {
     try {
         let result = await modelMethods.login(req.body);

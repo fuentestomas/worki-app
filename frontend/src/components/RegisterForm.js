@@ -92,46 +92,51 @@ export const RegisterForm = ({ role, navigation, initialUserRegister }) => {
             Registro {getRole()}
           </Text>
         </View>
-        <View style={{ paddingHorizontal: 25, marginTop: 45 }}>
-          <Text style={{ paddingLeft: 3, color: "black", fontWeight: 600 }}>
-            {role === "company" ? "Nombre de la empresa" : "Nombre completo"}
-          </Text>
-          <TextInput
-            placeholder={
-              role === "company" ? "Nombre de la empresa" : "Nombre completo"
-            }
-            placeholderTextColor={"gray"}
-            style={styles.input}
-            onChangeText={(text) => onChange("fullName", text, "string")}
-            value={userRegister?.fullName || ""}
-          />
-        </View>
-        <View style={{ paddingHorizontal: 25, paddingTop: 10 }}>
-          <Text style={{ paddingLeft: 3, color: "black", fontWeight: "600" }}>
-            Email
-          </Text>
-          <TextInput
-            placeholder="worki@gmail.com"
-            placeholderTextColor={"gray"}
-            keyboardType="email-address"
-            style={styles.input}
-            onChangeText={(text) => onChange("emailAddress", text, "string")}
-            value={userRegister?.emailAddress || ""}
-          />
-        </View>
-        <View style={{ paddingHorizontal: 25, paddingTop: 10 }}>
-          <Text style={{ paddingLeft: 3, color: "black", fontWeight: "600" }}>
-            Contraseña
-          </Text>
-          <TextInput
-            placeholder="********"
-            placeholderTextColor={"gray"}
-            secureTextEntry={true}
-            style={styles.input}
-            onChangeText={(text) => onChange("password", text, "string")}
-            value={userRegister?.password || ""}
-          />
-        </View>
+        { !userRegister?.uid && (
+          <View>
+            <View style={{ paddingHorizontal: 25, marginTop: 45 }}>
+              <Text style={{ paddingLeft: 3, color: "black", fontWeight: 600 }}>
+                {role === "company" ? "Nombre de la empresa" : "Nombre completo"}
+              </Text>
+              <TextInput
+                placeholder={
+                  role === "company" ? "Nombre de la empresa" : "Nombre completo"
+                }
+                placeholderTextColor={"gray"}
+                style={styles.input}
+                onChangeText={(text) => onChange("fullName", text, "string")}
+                value={userRegister?.fullName || ""}
+              />
+            </View>
+            <View style={{ paddingHorizontal: 25, paddingTop: 10 }}>
+              <Text style={{ paddingLeft: 3, color: "black", fontWeight: "600" }}>
+                Email
+              </Text>
+              <TextInput
+                placeholder="worki@gmail.com"
+                placeholderTextColor={"gray"}
+                keyboardType="email-address"
+                style={styles.input}
+                onChangeText={(text) => onChange("emailAddress", text, "string")}
+                value={userRegister?.emailAddress || ""}
+              />
+            </View>
+            <View style={{ paddingHorizontal: 25, paddingTop: 10 }}>
+              <Text style={{ paddingLeft: 3, color: "black", fontWeight: "600" }}>
+                Contraseña
+              </Text>
+              <TextInput
+                placeholder="********"
+                placeholderTextColor={"gray"}
+                secureTextEntry={true}
+                style={styles.input}
+                onChangeText={(text) => onChange("password", text, "string")}
+                value={userRegister?.password || ""}
+              />
+            </View>
+          </View>
+          
+        )}
         <View style={{ paddingHorizontal: 25, paddingTop: 10 }}>
           <Text style={{ paddingLeft: 3, color: "black", fontWeight: "600" }}>
             Celular

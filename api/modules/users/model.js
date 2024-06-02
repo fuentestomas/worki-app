@@ -4,7 +4,7 @@ const ModelSchema = new mongoose.Schema(
     {
         fullName: { type: String, required: true },
         emailAddress: { type: String, required: true, unique: true },
-        password: { type: String, required: true },
+        password: { type: String },
         // roles disponibles person=particular, business=comercio/empresa, worker=trabajador
         roles: {
             type: [
@@ -17,23 +17,15 @@ const ModelSchema = new mongoose.Schema(
             default: ['person']
         },
         job: { type: String },
-        category: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'categories'
-        },
+        category: { type: String },
+        // category: {
+        //     type: mongoose.Schema.Types.ObjectId,
+        //     ref: 'categories'
+        // },
         description: { type: String },
         avgRating: { type: Number },
         phoneNumber: { type: String },
-        addresses: {
-            type: [
-                {
-                    address: { type: String },
-                    lat: { type: Number },
-                    lng: { type: Number },
-                    city: { type: String },
-                }
-            ],
-        },
+        address: { type: String },
         avgPayRate: { type: String }
     },
     { timestamps: true }

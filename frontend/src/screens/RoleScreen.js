@@ -10,7 +10,7 @@ import {
   resetData,
 } from "../constants/userRegister";
 
-export const RoleScreen = ({ navigation }) => {
+export const RoleScreen = ({ route, navigation }) => {
   useEffect(() => {
     resetData();
   }, []);
@@ -25,6 +25,12 @@ export const RoleScreen = ({ navigation }) => {
   };
   const navigateToRegisterScreen = (role) => {
     let userRegister = onRoleType(role);
+    if (route.params.googleUser) {
+      let { googleUser } = route.params; 
+      userRegister.fullName = googleUser.name;
+      userRegister.emailAddress = googleUser.email;
+      userRegister.uid = googleUser.uid;
+    }
     navigation.navigate("RegisterScreen", {
       role,
       navigation,

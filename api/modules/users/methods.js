@@ -1,6 +1,16 @@
 const model = require('./model');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const admin = require('firebase-admin');
+const firebaseAuth = require("firebase-admin/auth");
+
+const serviceAccount = require("../../firebase/worki.json");
+
+const firebase = admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
+
+const auth = firebaseAuth.getAuth(firebase);
 
 class ModelMethods {
 
@@ -38,6 +48,48 @@ class ModelMethods {
                 return res;
             })
         
+        return result;
+    }
+
+    async register(data) {
+
+        if (!data.uid) {
+            const salt = bcrypt.genSaltSync(10);
+
+            const hashedPassword = await bcrypt.hash(data.password, salt);
+            
+            data.password = hashedPassword;
+        }
+
+        let result = await model.create(data);
+        
+        if (data.uid) {
+            const googleUser = await auth.getUserByEmail(data.emailAddress)
+                .then((userRecord) => {
+                    console.log(`Successfully fetched user data: ${userRecord.toJSON()}`);
+                    return userRecord.toJSON();
+                })
+                .catch((error) => {
+                    console.log('Error fetching user data:', error);
+                });
+            await auth.deleteUser(data.uid)
+                .then(async () => {
+                    console.log('Successfully deleted user');
+                })
+                .catch((error) => {
+                    console.log('Error deleting user:', error);
+                });
+            googleUser.providerData[0].uid = result._id.toString();
+            await auth.createUser(googleUser.providerData[0])
+                .then((userRecord) => {
+                    // See the UserRecord reference doc for the contents of userRecord.
+                    console.log('Successfully created new user:', userRecord.uid);
+                })
+                .catch((error) => {
+                    console.log('Error creating new user:', error);
+                });
+        }
+
         return result;
     }
     

@@ -23,7 +23,7 @@ export const signInWithGoogle = async () => {
     const googleCredential = auth.GoogleAuthProvider.credential(idToken);
     // Sign-in the user with the credential
     const userCredential = await auth().signInWithCredential(googleCredential);
-    // console.log(userCredential);
+    console.log(userCredential.user);
     const { displayName, email, photoURL, uid } = userCredential.user;
 
     return {
@@ -59,11 +59,11 @@ export const onGoogleSignIn = async (login, navigation) => {
       photo: result.photoURL,
     };
 
-    login(authObj);
-    saveToLocalStorage("auth", authObj);
+    //login(authObj);
+    //saveToLocalStorage("auth", authObj);
 
-    navigation.navigate("TabNavigator", {
-      screen: "Home",
+    navigation.navigate("RoleScreen", {
+      googleUser: authObj,
     });
     console.log("Inicié sesion");
   } else {
