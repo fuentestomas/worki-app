@@ -156,7 +156,9 @@ export const HomeScreen = ({ navigation }) => {
       {(role === "person" || role === "business") && (
         <TouchableOpacity
           style={styles.floatingButton}
-          onPress={handlePostNewPost}
+          onPress={navigation.navigate("StackNavigator", {
+            screen: "FormPost",
+          })}
         >
           <Image source={plus} style={styles.plusIcon} />
         </TouchableOpacity>

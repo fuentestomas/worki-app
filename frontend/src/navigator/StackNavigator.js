@@ -10,6 +10,7 @@ import { RegisterForm } from "../components/RegisterForm";
 import { FormCompanyScreen } from "../screens/FormCompanyScreen";
 import { FormParticularScreen, FormWorkerScreen } from "../screens/FormWorkerScreen";
 import { PostDescription } from "../screens/PostDescription";
+import {FormPost} from "../screens/FormPost";
 
 const Stack = createNativeStackNavigator();
 
@@ -25,6 +26,7 @@ export const StackNavigator = () => {
       <Stack.Screen name="FormCompanyScreen" component={FormCompanyScreen} />
       <Stack.Screen name="FormWorkerScreen" component={FormWorkerScreen} />
       <Stack.Screen name="PostDescription" component={PostDescription} />
+      <Stack.Screen name="FormPost" component={FormPost} />
     </Stack.Navigator>
   );
 };
