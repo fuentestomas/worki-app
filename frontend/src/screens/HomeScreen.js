@@ -13,29 +13,22 @@ import {
 } from "react-native";
 import { AuthContext } from "../context/AuthContext";
 import restaurant from "../assets/img/restaurant.png";
-import bell from "../assets/img/bell.png";
-import chef from "../assets/img/chef.png";
-import maid from "../assets/img/maid.png";
 import plumber from "../assets/img/plumber.png";
 import cashier from "../assets/img/cashier.png";
 import plus from "../assets/img/plus.png";
-import calendar from "../assets/img/calendar-2.png";
-import pin from "../assets/img/pin.png";
-import clock from "../assets/img/clock.png";
 import { getPosts, postCreateNewPost } from "../services/posts";
+import { PostItems } from "../components/PostItems";
+import { EmptyList } from "../components/EmptyList";
 
 export const HomeScreen = ({ navigation }) => {
   const { user } = useContext(AuthContext);
   const [searchText, setSearchText] = useState("");
-  const [selectedId, setSelectedId] = useState();
-  const [category, setCategory] = useState(null);
   const [posts, setPosts] = useState({});
   const [refreshView, setRefreshView] = useState(Math.random());
   const { role } = user;
 
   useEffect(() => {
     getData();
-    console.log("user:", user);
   }, [refreshView]);
 
   const handleSearchTextChange = (text) => {
@@ -52,24 +45,12 @@ export const HomeScreen = ({ navigation }) => {
   const getData = async () => {
     const data = await getPosts();
     if (data) {
-      console.log("data:", data);
       setPosts(data);
     }
   };
 
   const renderItem = ({ item }) => {
-    const backgroundColor = item.id === selectedId ? "lightgray" : "white";
-    const textColor = item.id === selectedId ? "white" : "black";
-    return (
-      <Item
-        item={item}
-        onPress={() => setSelectedId(item.id)}
-        backgroundColor={backgroundColor}
-        textColor={textColor}
-        navigation={navigation}
-        fullWidth
-      />
-    );
+    return <PostItems item={item} navigation={navigation} fullWidth />;
   };
 
   // const handleSelectOption = (option) => {
@@ -90,13 +71,12 @@ export const HomeScreen = ({ navigation }) => {
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <ScrollView>
         <View style={{ flex: 1 }}>
-          {role === "worker" && (
+          {role === "person" && (
             <View
               style={{
                 flex: 1,
                 alignItems: "center",
                 marginTop: 15,
-                marginBottom: 10,
               }}
             >
               <View style={styles.container}>
@@ -120,45 +100,55 @@ export const HomeScreen = ({ navigation }) => {
             </View>
           )}
 
-          <View style={{ alignItems: "center" }}>
+          <View
+            style={{
+              alignItems: "center",
+              marginTop: role === "person" ? 10 : 30,
+            }}
+          >
             <Text style={styles.cardsTitle}>Últimas ofertas laborales</Text>
           </View>
           <View
             style={{
               width: "100%",
               alignItems: "center",
-              marginHorizontal: 10,
               marginBottom: 30,
             }}
           >
-            <FlatList
-              data={posts}
-              renderItem={renderItem}
-              keyExtractor={(item, index) => index}
-              extraData={selectedId}
-              horizontal={true}
-            />
-          </View>
-
-          <View style={{ alignItems: "center" }}>
-            <Text style={styles.cardsTitle}>Postulaciones</Text>
-          </View>
-          {role === "worker" && (
-            <View
-              style={{
-                width: "100%",
-                alignItems: "center",
-                marginHorizontal: 10,
-                marginBottom: 40,
-              }}
-            >
+            {posts.length > 0 ? (
               <FlatList
-                data={POSTULACIONES_DATA}
+                data={posts}
                 renderItem={renderItem}
                 keyExtractor={(item, index) => index}
-                extraData={selectedId}
                 horizontal={true}
               />
+            ) : (
+              <EmptyList text={"No se han publicado ofertas."} />
+            )}
+          </View>
+          {role === "worker" && (
+            <View>
+              <View style={{ alignItems: "center" }}>
+                <Text style={styles.cardsTitle}>Postulaciones</Text>
+              </View>
+              <View
+                style={{
+                  width: "100%",
+                  alignItems: "center",
+                  marginBottom: 40,
+                }}
+              >
+                {POSTULACIONES_DATA.length > 0 ? (
+                  <FlatList
+                    data={POSTULACIONES_DATA}
+                    renderItem={renderItem}
+                    keyExtractor={(item, index) => index}
+                    horizontal={true}
+                  />
+                ) : (
+                  <EmptyList text={"No se han realizado postulaciones."} />
+                )}
+              </View>
             </View>
           )}
         </View>
@@ -208,20 +198,9 @@ const styles = StyleSheet.create({
     borderColor: "gray",
     paddingHorizontal: 10,
   },
-  item: {
-    flex: 1,
-    marginVertical: 8,
-    marginHorizontal: 10,
-    borderRadius: 13,
-    elevation: 2,
-  },
+
   title: {
     fontSize: 32,
-  },
-  cardImage: {
-    width: "100%",
-    minWidth: 300,
-    height: 140,
   },
   cardButton: {
     width: "100%",
@@ -251,135 +230,6 @@ const styles = StyleSheet.create({
     tintColor: "white",
   },
 });
-
-const Item = ({ item, onPress, backgroundColor, textColor, navigation }) => (
-  <View style={[styles.item]}>
-    <Card flex style={{ width: "100%", maxWidth: 300, minHeight: 300 }}>
-      <Card.Image source={restaurant} style={styles.cardImage} />
-      <View
-        style={{
-          width: 90,
-          height: 35,
-          backgroundColor: Colors.blue30,
-          borderRadius: 5,
-          alignContent: "center",
-          justifyContent: "center",
-          marginLeft: 15,
-          marginTop: 15,
-          position: "absolute",
-        }}
-      >
-        <Text
-          style={{
-            textAlign: "center",
-            color: "white",
-            fontSize: 14,
-            fontFamily: "Avenir-Medium",
-          }}
-        >
-          {item.payRate || "Sin info"}
-        </Text>
-      </View>
-      <View style={{ height: 100, padding: 12, width: "100%" }}>
-        <View style={{ width: "100%" }}>
-          <Text
-            style={{
-              color: "black",
-              fontFamily: "Avenir-Black",
-              fontSize: 18,
-              marginVertical: -5,
-            }}
-          >
-            {item.title}
-          </Text>
-        </View>
-        <View
-          style={{ marginTop: 5, flexDirection: "row", alignItems: "center" }}
-        >
-          <Icon source={pin} size={14} tintColor={Colors.grey40} />
-          <Text
-            style={{
-              color: Colors.grey30,
-              paddingHorizontal: 4,
-              fontSize: 12.5,
-              fontFamily: "Avenir-Medium",
-            }}
-          >
-            Av. Sabattini 3605, Córdoba, Argentina
-          </Text>
-        </View>
-        <View
-          style={{
-            width: "100%",
-            flexDirection: "row",
-            justifyContent: "space-between",
-          }}
-        >
-          <View
-            style={{
-              marginTop: 13,
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            <Icon source={calendar} size={16} tintColor={Colors.blue30} />
-            <Text
-              style={{
-                color: "black",
-                paddingHorizontal: 6,
-                fontSize: 11,
-                fontFamily: "Avenir-Medium",
-              }}
-            >
-              15-06-2024 - 15-07-2024
-            </Text>
-          </View>
-          <View
-            style={{
-              marginTop: 13,
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            <Icon source={clock} size={16} tintColor={Colors.blue30} />
-            <Text
-              style={{
-                color: "black",
-                paddingHorizontal: 6,
-                fontSize: 11,
-                fontFamily: "Avenir-Medium",
-              }}
-            >
-              09:00 - 18:00
-            </Text>
-          </View>
-        </View>
-        <View style={{ width: "100%", marginTop: 15, marginLeft: 2 }}>
-          <Text
-            style={{
-              color: Colors.grey20,
-              fontSize: 13,
-              fontFamily: "Avenir-Medium",
-            }}
-            numberOfLines={2}
-            ellipsizeMode="tail"
-          >
-            {item.description}
-          </Text>
-        </View>
-      </View>
-      <View style={{ width: "100%", alignItems: "flex-end" }}>
-        <View
-          style={{
-            width: 145,
-            marginRight: 15,
-            marginBottom: 15,
-          }}
-        ></View>
-      </View>
-    </Card>
-  </View>
-);
 
 const POSTULACIONES_DATA = [
   {

@@ -11,7 +11,7 @@ export const PostDescription = ({ navigation, route }) => {
 
   useEffect(() => {
     getData();
-  }, [postDetails]);
+  }, [id]);
 
   const getData = async () => {
     const data = await getPostDetail(id);
