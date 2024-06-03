@@ -1,5 +1,6 @@
 /api/node_modules
 /api/package-lock.json
+/api/firebase/worki.json
 frontend/node_modules
 frontend/package-lock.json
 frontend/android/app/build/
