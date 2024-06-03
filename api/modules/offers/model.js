@@ -10,6 +10,12 @@ const ModelSchema = new mongoose.Schema(
       title: { type: String },
       description: { type: String },
       payRate: { type: String },
+      duration: { type: String },
+      dateStart: { type: String },
+      dateEnd: { type: String },
+      timeStart: { type: String },
+      timeEnd: { type: String },
+      isFlexible: { type: Boolean }
     },
     { timestamps: true }
 );
