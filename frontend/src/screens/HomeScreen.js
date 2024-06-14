@@ -158,6 +158,9 @@ export const HomeScreen = ({ navigation }) => {
           style={styles.floatingButton}
           onPress={() => navigation.navigate("StackNavigator", {
             screen: "FormPost",
+            params: {
+              refreshView
+            }
           })}
         >
           <Image source={plus} style={styles.plusIcon} />
