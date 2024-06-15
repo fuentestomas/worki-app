@@ -26,7 +26,8 @@ const ModelSchema = new mongoose.Schema(
         avgRating: { type: Number },
         phoneNumber: { type: String },
         address: { type: String },
-        avgPayRate: { type: String }
+        avgPayRate: { type: String },   
+        location: { type: String}
     },
     { timestamps: true }
 );
