@@ -52,6 +52,15 @@ class ModelMethods {
         return result;
     }
 
+    getByUserId(userId) {
+        let result = model.find({ userId })
+            .then((result) => {
+                return result;
+            });
+        
+        return result;
+    }
+
 }
 
 module.exports = {

@@ -11,7 +11,8 @@ const ModelSchema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: "users"
         },
-        status: {type: String},
+        status: { type: String },
+        cv: { type: String }  // New attribute for storing CV file path or URL
     },
     { timestamps: true }
 );

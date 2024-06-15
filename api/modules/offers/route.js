@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { ModelMethods } = require('./methods');
+const verifyToken = require('../../jwtMiddleware'); 
 
 const modelMethods = new ModelMethods();
 
@@ -84,6 +85,28 @@ router.put('/:id', async (req, res) => {
 router.delete('/:id', async (req, res) => {
     try {
         let result = await modelMethods.delete(req.params.id);
+        res.send(result);
+    }
+    catch (e) {
+        console.log(e);
+        res.sendStatus(400);
+    }
+});
+
+router.get('/user/offers', verifyToken, async (req, res) => {
+    try {
+        let result = await modelMethods.getByUserId(req.userId);
+        res.send(result);
+    }
+    catch (e) {
+        console.log(e);
+        res.sendStatus(400);
+    }
+});
+
+router.get('/offer/:offerId/applications', verifyToken, async (req, res) => {
+    try {
+        let result = await modelMethods.getByOfferId(req.params.offerId);
         res.send(result);
     }
     catch (e) {
