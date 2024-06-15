@@ -93,9 +93,10 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
-router.get('/user/offers', verifyToken, async (req, res) => {
+router.get('/user/:userId/offers', async (req, res) => {
     try {
-        let result = await modelMethods.getByUserId(req.userId);
+        let userId = req.params.userId;
+        let result = await modelMethods.getByUserId(userId);
         res.send(result);
     }
     catch (e) {

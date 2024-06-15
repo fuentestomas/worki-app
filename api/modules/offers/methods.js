@@ -74,4 +74,4 @@ class ModelMethods {
 
 module.exports = {
     ModelMethods
-};
+};  
