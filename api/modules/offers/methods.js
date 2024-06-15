@@ -52,6 +52,24 @@ class ModelMethods {
         return result;
     }
 
+    getByUserId(userId) {
+        let result = model.find({ userId })
+            .then((result) => {
+                return result;
+            });
+        
+        return result;
+    }
+
+    getByOfferId(offerId) {
+        let result = applicationModel.find({ offerId }).populate('userId')
+            .then((result) => {
+                return result;
+            });
+        
+        return result;
+    }
+
 }
 
 module.exports = {
