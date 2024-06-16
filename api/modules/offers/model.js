@@ -18,7 +18,13 @@ const ModelSchema = new mongoose.Schema(
         timeStart: { type: String },
         timeEnd: { type: String },
         isFlexible: { type: Boolean },
-        location: { type: String, ref: "users"}
+        location: { type: String, ref: "users" },
+        status: {
+            type: String,
+            enum: ['activa', 'finalizada'],
+            required: true,
+            default: 'activa'
+        }
     },
     { timestamps: true }
 );

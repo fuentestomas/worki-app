@@ -9,6 +9,7 @@ router.post('/createOffer', async (req, res) => {
     try {
         const { image, title, description, startDate, endDate, startTime, endTime, salaryMin, salaryMax, userId, location } = req.body;
 
+        // Ensure all required fields are provided
         if (!image || !title || !description || !startDate || !endDate || !startTime || !endTime || !salaryMin || !salaryMax || !userId || !location) {
             return res.status(400).send({ message: "All fields are required." });
         }
@@ -24,7 +25,8 @@ router.post('/createOffer', async (req, res) => {
             salaryMin,
             salaryMax,
             userId,
-            location 
+            location,
+            status: 'activa' 
         };
 
         let result = await modelMethods.create(data);
@@ -36,10 +38,23 @@ router.post('/createOffer', async (req, res) => {
 });
 router.get('/', async (req, res) => {
     try {
-        let result = await modelMethods.getAll();
+        const status = req.query.status;
+
+        let filters = {};
+        if (status) {
+            filters.status = status;
+        }
+
+        let result = await modelMethods.getAll(filters, 'image title location dateStart dateEnd timeStart timeEnd status');
+
+        result.sort((a, b) => {
+            if (a.status === 'activa' && b.status === 'finalizada') return -1;
+            if (a.status === 'finalizada' && b.status === 'activa') return 1;
+            return 0;
+        });
+
         res.send(result);
-    }
-    catch (e) {
+    } catch (e) {
         console.log(e);
         res.sendStatus(400);
     }
@@ -47,10 +62,14 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     try {
-        let result = await modelMethods.getById(req.params.id);
+        let result = await modelMethods.getById(req.params.id, 'image title location dateStart dateEnd timeStart timeEnd status');
+
+        if (!result) {
+            return res.status(404).send({ message: 'Offer not found' });
+        }
+
         res.send(result);
-    }
-    catch (e) {
+    } catch (e) {
         console.log(e);
         res.sendStatus(400);
     }
