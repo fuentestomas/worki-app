@@ -11,28 +11,19 @@ class ModelMethods {
         return result;
     }
     
-    getById(id) {
-        let result = model.findById(id)
-            .then((result) => {
-                return result;
-            });
-        
-        return result;
-    };
+    getById(id, fields = '') {
+        return model.findById(id)
+            .select(fields)
+            .then((result) => result)
+            .catch((err) => { throw err; });
+    }
 
-    getAll(filters, populates) {
-        if (arguments.length == 0) {
-            filters = {};
-            populates = {};
-        }
-        
-        let result = model.find()
-            .then((result) => {
-                return result;
-            });
-        
-        return result;
-    };
+    getAll(filters = {}, fields = '') {
+        return model.find(filters)
+            .select(fields)
+            .then((result) => result)
+            .catch((err) => { throw err; });
+    }
 
     update(id, newData) {
         let result = model.findByIdAndUpdate(id, newData, { returnDocument: 'after' })
