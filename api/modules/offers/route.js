@@ -5,35 +5,35 @@ const verifyToken = require('../../jwtMiddleware');
 
 const modelMethods = new ModelMethods();
 
-    router.post('/createOffer', async (req, res) => {
-        try {
-            const { image, title, description, startDate, endDate, startTime, endTime, salaryMin, salaryMax, userId } = req.body;
+router.post('/createOffer', async (req, res) => {
+    try {
+        const { image, title, description, startDate, endDate, startTime, endTime, salaryMin, salaryMax, userId, location } = req.body;
 
-            if (!image || !title || !description || !startDate || !endDate || !startTime || !endTime || !salaryMin || !salaryMax || !userId) {
-                return res.status(400).send({ message: "All fields are required." });
-            }
-
-            const data = {
-                image,
-                title,
-                description,
-                dateStart: startDate,
-                dateEnd: endDate,
-                timeStart: startTime,
-                timeEnd: endTime,
-                salaryMin,
-                salaryMax,
-                userId
-            };
-
-            let result = await modelMethods.create(data);
-            res.status(201).send(result);
-        } catch (e) {
-            console.log(e);
-            res.sendStatus(400);
+        if (!image || !title || !description || !startDate || !endDate || !startTime || !endTime || !salaryMin || !salaryMax || !userId || !location) {
+            return res.status(400).send({ message: "All fields are required." });
         }
-    });
 
+        const data = {
+            image,
+            title,
+            description,
+            dateStart: startDate,
+            dateEnd: endDate,
+            timeStart: startTime,
+            timeEnd: endTime,
+            salaryMin,
+            salaryMax,
+            userId,
+            location 
+        };
+
+        let result = await modelMethods.create(data);
+        res.status(201).send(result);
+    } catch (e) {
+        console.log(e);
+        res.sendStatus(400);
+    }
+});
 router.get('/', async (req, res) => {
     try {
         let result = await modelMethods.getAll();

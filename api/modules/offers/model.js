@@ -17,7 +17,8 @@ const ModelSchema = new mongoose.Schema(
         dateEnd: { type: String },
         timeStart: { type: String },
         timeEnd: { type: String },
-        isFlexible: { type: Boolean }
+        isFlexible: { type: Boolean },
+        location: { type: String, ref: "users"}
     },
     { timestamps: true }
 );
