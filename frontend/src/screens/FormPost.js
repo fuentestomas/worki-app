@@ -11,6 +11,9 @@ import {
 } from "react-native";
 import back from "../assets/img/back.png";
 import { Button, Colors, Switch } from "react-native-ui-lib";
+import { launchImageLibrary } from "react-native-image-picker";
+import RNFS from "react-native-fs";
+import { EmptyList } from "../components/EmptyList";
 
 export const FormPost = ({ navigation, route }) => {
   const [openStartDate, setOpenStartDate] = useState(false);
@@ -18,6 +21,7 @@ export const FormPost = ({ navigation, route }) => {
   const [openStartHour, setOpenStartHour] = useState(false);
   const [openEndHour, setOpenEndHour] = useState(false);
   const [flexibleValue, setFlexibleValue] = useState(false);
+  const [imageUri, setImageUri] = useState(null);
   const [dates, setDates] = useState({
     startDateTime: null,
     endDateTime: null,
@@ -134,6 +138,27 @@ export const FormPost = ({ navigation, route }) => {
     return new Date();
   };
 
+  const selectImage = () => {
+    launchImageLibrary({ mediaType: "photo" }, (response) => {
+      if (response.didCancel) {
+        console.log("User cancelled image picker");
+      } else if (response.error) {
+        console.log("ImagePicker Error: ", response.error);
+      } else {
+        const source = { uri: response.assets[0].uri };
+        // Convertir la imagen a base64
+        RNFS.readFile(source.uri, "base64")
+          .then((base64Data) => {
+            setImageUri(base64Data);
+            console.log("image base64:", base64Data);
+          })
+          .catch((error) => {
+            console.log("Error converting image to base64: ", error);
+          });
+      }
+    });
+  };
+
   return (
     <View style={{ flex: 1 }}>
       <View style={{ position: "absolute", marginTop: 30, marginLeft: 20 }}>
@@ -174,18 +199,42 @@ export const FormPost = ({ navigation, route }) => {
                 Cargar imagen de la publicación
               </Text>
             </View>
+
             <View
               style={{
                 width: 250,
                 height: 250,
-                backgroundColor: "brown",
-                borderRadius: 15,
                 marginTop: 15,
               }}
-            ></View>
+            >
+              {imageUri ? (
+                <View style={{ elevation: 2, marginVertical: 8 }}>
+                  <Image
+                    source={{ uri: `data:image/jpeg;base64,${imageUri}` }}
+                    style={{ width: 250, height: 250, borderRadius: 13 }}
+                  />
+                </View>
+              ) : (
+                <EmptyList
+                  text={"Seleccione una imagen."}
+                  maxWidth={250}
+                  minHeight={250}
+                />
+              )}
+            </View>
+            <View style={{ marginTop: 30 }}>
+              <Button
+                style={{ borderRadius: 15 }}
+                labelStyle={{ fontSize: 15, padding: 2 }}
+                label={"Cargar imagen"}
+                backgroundColor={Colors.blue30}
+                size={Button.sizes.medium}
+                onPress={selectImage}
+              />
+            </View>
           </View>
           <View style={{ alignItems: "center" }}>
-            <View style={{ marginTop: 42 }}>
+            <View style={{ marginTop: 38 }}>
               <Text
                 style={{ fontSize: 17, color: "black", textAlign: "center" }}
               >
