@@ -12,17 +12,29 @@ class ModelMethods {
     }
     
     getById(id, fields = '') {
-        return model.findById(id)
-            .select(fields)
-            .then((result) => result)
-            .catch((err) => { throw err; });
+        if (fields) {
+            return model.findById(id)
+                .select(fields)
+                .then((result) => result)
+                .catch((err) => { throw err; });
+        } else {
+            return model.findById(id)
+                .then((result) => result)
+                .catch((err) => { throw err; });
+        }
     }
 
     getAll(filters = {}, fields = '') {
-        return model.find(filters)
-            .select(fields)
-            .then((result) => result)
-            .catch((err) => { throw err; });
+        if (fields) {
+            return model.find(filters)
+                .select(fields)
+                .then((result) => result)
+                .catch((err) => { throw err; });
+        } else {
+            return model.find(filters)
+                .then((result) => result)
+                .catch((err) => { throw err; });
+        }
     }
 
     update(id, newData) {

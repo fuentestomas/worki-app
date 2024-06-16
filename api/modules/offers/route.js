@@ -45,7 +45,7 @@ router.get('/', async (req, res) => {
             filters.status = status;
         }
 
-        let result = await modelMethods.getAll(filters, 'image title location dateStart dateEnd timeStart timeEnd status');
+        let result = await modelMethods.getAll(filters);
 
         result.sort((a, b) => {
             if (a.status === 'activa' && b.status === 'finalizada') return -1;
@@ -62,7 +62,7 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     try {
-        let result = await modelMethods.getById(req.params.id, 'image title location dateStart dateEnd timeStart timeEnd status');
+        let result = await modelMethods.getById(req.params.id);
 
         if (!result) {
             return res.status(404).send({ message: 'Offer not found' });
@@ -74,6 +74,7 @@ router.get('/:id', async (req, res) => {
         res.sendStatus(400);
     }
 });
+
 
 router.put('/:id', async (req, res) => {
     try {
