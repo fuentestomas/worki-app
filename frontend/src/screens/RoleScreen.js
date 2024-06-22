@@ -25,7 +25,7 @@ export const RoleScreen = ({ route, navigation }) => {
   };
   const navigateToRegisterScreen = (role) => {
     let userRegister = onRoleType(role);
-    if (route.params.googleUser) {
+    if (route.params?.googleUser) {
       let { googleUser } = route.params; 
       userRegister.fullName = googleUser.name;
       userRegister.emailAddress = googleUser.email;
