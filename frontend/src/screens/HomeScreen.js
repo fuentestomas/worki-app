@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Button, Colors, Card, Icon } from "react-native-ui-lib";
+import LoaderKit from "react-native-loader-kit";
 import {
   FlatList,
   SafeAreaView,
@@ -19,26 +20,38 @@ import plus from "../assets/img/plus.png";
 import { getPosts, getUserPost } from "../services/posts";
 import { PostItems } from "../components/PostItems";
 import { EmptyList } from "../components/EmptyList";
+import { useFocusEffect, useIsFocused } from "@react-navigation/native";
 
 export const HomeScreen = ({ navigation }) => {
   const { user } = useContext(AuthContext);
   const [searchText, setSearchText] = useState("");
   const [posts, setPosts] = useState({});
   const [refreshView, setRefreshView] = useState(Math.random());
+  const [isLoading, setIsLoading] = useState(true);
+  const isFocused = useIsFocused();
   const { role, id } = user;
 
-  useEffect(() => {
-    getData();
-  }, [refreshView]);
+  useFocusEffect(
+    React.useCallback(() => {
+      getData();
+    }, [refreshView, isFocused])
+  );
 
   const handleSearchTextChange = (text) => {
     setSearchText(text);
   };
 
   const getData = async () => {
-    const data = await getPosts();
+    setIsLoading(true);
+    let data;
+    if (role == "business" || role == "person") {
+      data = await getUserPost(id);
+    } else {
+      data = await getPosts();
+    }
     if (data) {
       setPosts(data);
+      setIsLoading(false);
     }
   };
 
@@ -62,25 +75,36 @@ export const HomeScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
-      <ScrollView>
-        <View style={{ flex: 1 }}>
-          {role === "person" && (
-            <View
-              style={{
-                flex: 1,
-                alignItems: "center",
-                marginTop: 15,
-              }}
-            >
-              <View style={styles.container}>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Buscar..."
-                  placeholderTextColor={"gray"}
-                  onChangeText={handleSearchTextChange}
-                  value={searchText}
-                />
-                {/* <FlatList
+      {isLoading ? (
+        <View
+          style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+        >
+          <LoaderKit
+            style={{ width: 90, height: 90 }}
+            name={"BallClipRotate"}
+            color={Colors.blue30}
+          />
+        </View>
+      ) : (
+        <ScrollView>
+          <View style={{ flex: 1 }}>
+            {role === "person" && (
+              <View
+                style={{
+                  flex: 1,
+                  alignItems: "center",
+                  marginTop: 15,
+                }}
+              >
+                <View style={styles.container}>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Buscar..."
+                    placeholderTextColor={"gray"}
+                    onChangeText={handleSearchTextChange}
+                    value={searchText}
+                  />
+                  {/* <FlatList
                 data={filteredOptions}
                 renderItem={renderOptionItem}
                 keyExtractor={(item) => item.id.toString()}
@@ -89,63 +113,68 @@ export const HomeScreen = ({ navigation }) => {
                   { display: searchText ? "flex" : "none" },
                 ]}
               /> */}
+                </View>
               </View>
-            </View>
-          )}
+            )}
 
-          <View
-            style={{
-              alignItems: "center",
-              marginTop: role === "person" ? 10 : 30,
-            }}
-          >
-            <Text style={styles.cardsTitle}>Últimas ofertas laborales</Text>
-          </View>
-          <View
-            style={{
-              width: "100%",
-              alignItems: "center",
-              marginBottom: 30,
-            }}
-          >
-            {posts.length > 0 ? (
-              <FlatList
-                data={posts}
-                renderItem={renderItem}
-                keyExtractor={(item, index) => index}
-                horizontal={true}
-              />
-            ) : (
-              <EmptyList text={"No se han publicado ofertas."} />
+            <View
+              style={{
+                alignItems: "center",
+                marginTop: role === "person" ? 10 : 30,
+              }}
+            >
+              <Text style={styles.cardsTitle}>
+                {role == "business" || role == "person"
+                  ? "Mis publicaciones"
+                  : "Últimas ofertas laborales"}
+              </Text>
+            </View>
+            <View
+              style={{
+                width: "100%",
+                alignItems: "center",
+                marginBottom: 30,
+              }}
+            >
+              {posts.length > 0 ? (
+                <FlatList
+                  data={posts}
+                  renderItem={renderItem}
+                  keyExtractor={(item, index) => index}
+                  horizontal={true}
+                />
+              ) : (
+                <EmptyList text={"No se han publicado ofertas."} />
+              )}
+            </View>
+            {role === "worker" && (
+              <View>
+                <View style={{ alignItems: "center" }}>
+                  <Text style={styles.cardsTitle}>Postulaciones</Text>
+                </View>
+                <View
+                  style={{
+                    width: "100%",
+                    alignItems: "center",
+                    marginBottom: 40,
+                  }}
+                >
+                  {POSTULACIONES_DATA.length > 0 ? (
+                    <FlatList
+                      data={POSTULACIONES_DATA}
+                      renderItem={renderItem}
+                      keyExtractor={(item, index) => index}
+                      horizontal={true}
+                    />
+                  ) : (
+                    <EmptyList text={"No se han realizado postulaciones."} />
+                  )}
+                </View>
+              </View>
             )}
           </View>
-          {role === "worker" && (
-            <View>
-              <View style={{ alignItems: "center" }}>
-                <Text style={styles.cardsTitle}>Postulaciones</Text>
-              </View>
-              <View
-                style={{
-                  width: "100%",
-                  alignItems: "center",
-                  marginBottom: 40,
-                }}
-              >
-                {POSTULACIONES_DATA.length > 0 ? (
-                  <FlatList
-                    data={POSTULACIONES_DATA}
-                    renderItem={renderItem}
-                    keyExtractor={(item, index) => index}
-                    horizontal={true}
-                  />
-                ) : (
-                  <EmptyList text={"No se han realizado postulaciones."} />
-                )}
-              </View>
-            </View>
-          )}
-        </View>
-      </ScrollView>
+        </ScrollView>
+      )}
       {(role === "person" || role === "business") && (
         <TouchableOpacity
           style={styles.floatingButton}
@@ -153,11 +182,10 @@ export const HomeScreen = ({ navigation }) => {
             navigation.navigate("StackNavigator", {
               screen: "FormPost",
               params: {
-                refreshView
-              }
-            })
-        
-        }}
+                refreshView,
+              },
+            });
+          }}
         >
           <Image source={plus} style={styles.plusIcon} />
         </TouchableOpacity>

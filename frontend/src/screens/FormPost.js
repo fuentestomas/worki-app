@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Text,
   TextInput,
+  ToastAndroid,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -149,12 +150,23 @@ export const FormPost = ({ navigation, route }) => {
     });
   };
 
+  const showToast = (message) => {
+    ToastAndroid.show(message, ToastAndroid.SHORT);
+  };
+
   const onHableCreateNewPost = async () => {
     const { id } = await loadFromLocalStorage("auth");
     postObject.userId = id;
-    const response = await postCreateNewPost(postObject);
-    if (response) {
-      console.log("response:", response);
+    try {
+      const response = await postCreateNewPost(postObject);
+      if (response) {
+        showToast("Creación de publicación exitosa");
+        navigation.navigate("TabNavigator", {
+          screen: "Home",
+        });
+      }
+    } catch (error) {
+      showToast("Complete todos los campos");
     }
   };
 
