@@ -53,8 +53,10 @@ export const FormCompanyScreen = ({ role, navigation, route }) => {
       // token: result.idToken,
       // User info
       // uid: result.uid,
+      id: data._id,
       email: data.emailAddress,
       name: data.fullName,
+      role: data.roles[0],
     });
     navigation.navigate("TabNavigator", {
       screen: "Home",

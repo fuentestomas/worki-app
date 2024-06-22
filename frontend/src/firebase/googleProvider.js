@@ -161,12 +161,16 @@ export const onSilentGoogleSignIn = async (login, navigation, setLoading) => {
           photo: result.photoURL,
         };
 
-        login(userObj);
-        saveToLocalStorage("auth", userObj);
-
-        navigation.navigate("TabNavigator", {
-          screen: "Home",
-        });
+        const data = await getUserInfo(result.uid);
+        if (data) {
+          data.role = data.roles[0];
+          data.id = data._id.toString();
+          login(data);
+          saveToLocalStorage("auth", data);
+          navigation.navigate("TabNavigator", {
+            screen: "Home",
+          });
+        }
       } else {
         setLoading(false);
       }
