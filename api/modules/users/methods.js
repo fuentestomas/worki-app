@@ -66,7 +66,7 @@ class ModelMethods {
         if (data.uid) {
             const googleUser = await auth.getUserByEmail(data.emailAddress)
                 .then((userRecord) => {
-                    console.log(`Successfully fetched user data: ${userRecord.toJSON()}`);
+                    console.log(`Successfully fetched user data: ${userRecord}`);
                     return userRecord.toJSON();
                 })
                 .catch((error) => {
@@ -79,11 +79,30 @@ class ModelMethods {
                 .catch((error) => {
                     console.log('Error deleting user:', error);
                 });
-            googleUser.providerData[0].uid = result._id.toString();
-            await auth.createUser(googleUser.providerData[0])
+            //console.log('Google user', googleUser)
+            let firebaseUser = [{
+                uid: result._id.toString(),
+                displayName: googleUser.displayName,
+                email: googleUser.email,
+                photoURL: googleUser.photoURL,
+                emailVerified: true,
+                metadata: googleUser.metadata,
+                // User with Google provider.
+                providerData: [
+                    {
+                    uid: googleUser.providerData[0].uid,
+                    email: googleUser.email,
+                    displayName: googleUser.displayName,
+                    photoURL: googleUser.photoURL,
+                    providerId: 'google.com',
+                    },
+                ],
+            }]
+            //console.log(firebaseUser)
+            await auth.importUsers(firebaseUser)
                 .then((userRecord) => {
                     // See the UserRecord reference doc for the contents of userRecord.
-                    console.log('Successfully created new user:', userRecord.uid);
+                    console.log('userRecord', userRecord)
                 })
                 .catch((error) => {
                     console.log('Error creating new user:', error);
