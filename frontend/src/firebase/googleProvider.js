@@ -8,6 +8,8 @@ import {
   saveToLocalStorage,
 } from "../hooks/useLocalStorage";
 
+import { getUserInfo } from "../services/user";
+
 GoogleSignin.configure({
   webClientId:
     "809098418-269io6b5kf91ll942vdqbcs9g10kia9j.apps.googleusercontent.com",
@@ -28,6 +30,8 @@ export const signInWithGoogle = async () => {
 
     return {
       ok: true,
+      // New user check
+      isNewUser: userCredential.additionalUserInfo.isNewUser,
       // Token
       idToken: await userCredential.user.getIdToken(),
       // User info
@@ -61,10 +65,23 @@ export const onGoogleSignIn = async (login, navigation) => {
 
     //login(authObj);
     //saveToLocalStorage("auth", authObj);
-
-    navigation.navigate("RoleScreen", {
-      googleUser: authObj,
-    });
+    if (result.isNewUser) {
+      navigation.navigate("RoleScreen", {
+        googleUser: authObj,
+      });
+    }
+    else {
+      const data = await getUserInfo(result.uid);
+      if (data) {
+        data.role = data.roles[0];
+        data.id = data._id.toString();
+        login(data);
+        saveToLocalStorage("auth", data);
+        navigation.navigate("TabNavigator", {
+          screen: "Home",
+        });
+      }
+    }
     console.log("Inicié sesion");
   } else {
     console.log("No inicié sesión");

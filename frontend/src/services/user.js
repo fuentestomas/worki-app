@@ -19,3 +19,13 @@ export const postUserLogin = async (body) => {
     throw error;
   }
 };
+
+export const getUserInfo = async (id) => {
+  try {
+    const { data } = await client.get("/users/"+id);
+    return data;
+  } catch (error) {
+    console.error(error.message);
+    throw error;
+  }
+};

@@ -21,6 +21,7 @@ export const AuthProvider = ({ children }) => {
   const [authState, dispatch] = useReducer(authReducer, initialState, init);
 
   const login = async (user = '') => {
+    console.log('stored user', user)
     dispatch({
       type: '[Auth] Login',
       payload: user,
