@@ -94,6 +94,7 @@ export const signOutFromGoogle = async (navigation) => {
     if (currentUser) {
       await auth().signOut();
       await GoogleSignin.signOut();
+      await clearAllLocalStorage();
     } else {
       await clearAllLocalStorage();
     }
