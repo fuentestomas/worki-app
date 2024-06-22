@@ -14,32 +14,37 @@ import { Button, Colors, Switch } from "react-native-ui-lib";
 import { launchImageLibrary } from "react-native-image-picker";
 import RNFS from "react-native-fs";
 import { EmptyList } from "../components/EmptyList";
+import { loadFromLocalStorage } from "../hooks/useLocalStorage";
+import { postCreateNewPost } from "../services/posts";
+
+const initialState = {
+  image: "",
+  title: "",
+  description: "",
+  startDate: "",
+  endDate: "",
+  startTime: "",
+  endTime: "",
+  salaryMin: "",
+  salaryMax: "",
+  userId: null,
+  location: "Córdoba, Argentina",
+  isFlexible: false,
+};
+const initialDateState = {
+  startDate: null,
+  endDate: null,
+  startTime: null,
+  endTime: null,
+};
 
 export const FormPost = ({ navigation, route }) => {
   const [openStartDate, setOpenStartDate] = useState(false);
   const [openEndDate, setOpenEndDate] = useState(false);
   const [openStartHour, setOpenStartHour] = useState(false);
   const [openEndHour, setOpenEndHour] = useState(false);
-  const [flexibleValue, setFlexibleValue] = useState(false);
-  const [imageUri, setImageUri] = useState(null);
-  const [dates, setDates] = useState({
-    startDateTime: null,
-    endDateTime: null,
-    startHour: null,
-    endHour: null,
-  });
-
-  const [postObject, setPostObject] = useState({
-    title: "",
-    description: "",
-    startDateTime: "",
-    endDateTime: "",
-    startHour: "",
-    endHour: "",
-    startSalary: "",
-    endSalary: "",
-    flexible: false,
-  });
+  const [postObject, setPostObject] = useState(initialState);
+  const [dates, setDates] = useState(initialDateState);
   const { refreshView } = route.params;
 
   useEffect(() => {
@@ -47,20 +52,8 @@ export const FormPost = ({ navigation, route }) => {
   }, [refreshView]);
 
   const resetData = () => {
-    setPostObject({
-      title: "",
-      description: "",
-      startDateTime: "",
-      endDateTime: "",
-      startHour: "",
-      endHour: "",
-    });
-    setDates({
-      startDateTime: null,
-      endDateTime: null,
-      startHour: null,
-      endHour: null,
-    });
+    setPostObject(initialState);
+    setDates(initialDateState);
   };
 
   const onChange = (name, value) => {
@@ -107,9 +100,7 @@ export const FormPost = ({ navigation, route }) => {
           ? `0${hour.getMinutes()}`
           : hour.getMinutes();
 
-      const formattedHour = `${hours}:${
-        minutes < 10 ? `0${minutes}` : minutes
-      }`;
+      const formattedHour = `${hours}:${minutes}`;
 
       onChange(name, formattedHour); // Guardar el objeto Date en el estado
       onChangeDates(name, formattedHour);
@@ -149,14 +140,22 @@ export const FormPost = ({ navigation, route }) => {
         // Convertir la imagen a base64
         RNFS.readFile(source.uri, "base64")
           .then((base64Data) => {
-            setImageUri(base64Data);
-            console.log("image base64:", base64Data);
+            onChange("image", base64Data);
           })
           .catch((error) => {
             console.log("Error converting image to base64: ", error);
           });
       }
     });
+  };
+
+  const onHableCreateNewPost = async () => {
+    const { id } = await loadFromLocalStorage("auth");
+    postObject.userId = id;
+    const response = await postCreateNewPost(postObject);
+    if (response) {
+      console.log("response:", response);
+    }
   };
 
   return (
@@ -207,10 +206,12 @@ export const FormPost = ({ navigation, route }) => {
                 marginTop: 15,
               }}
             >
-              {imageUri ? (
+              {postObject.image ? (
                 <View style={{ elevation: 2, marginVertical: 8 }}>
                   <Image
-                    source={{ uri: `data:image/jpeg;base64,${imageUri}` }}
+                    source={{
+                      uri: `data:image/jpeg;base64,${postObject.image}`,
+                    }}
                     style={{ width: 250, height: 250, borderRadius: 13 }}
                   />
                 </View>
@@ -273,12 +274,12 @@ export const FormPost = ({ navigation, route }) => {
               placeholder={"Escriba la descripción del puesto"}
               placeholderTextColor={"gray"}
               multiline={true}
-              value={postObject?.description}
+              value={postObject.description}
               numberOfLines={8}
               style={{
                 borderColor: "gray",
                 borderRadius: 10,
-                backgroundColor: "#f5f5f5",
+                backgroundColor: "white",
                 fontSize: 15,
                 paddingLeft: 12,
                 marginTop: 10,
@@ -312,10 +313,10 @@ export const FormPost = ({ navigation, route }) => {
               <DatePicker
                 modal
                 open={openStartDate}
-                date={getCurrentDate(postObject.startDateTime)}
+                date={getCurrentDate(postObject.startDate)}
                 onConfirm={(startDateTime) => {
                   setOpenStartDate(false);
-                  formatDate("startDateTime", startDateTime);
+                  formatDate("startDate", startDateTime);
                 }}
                 locale="es"
                 mode="date"
@@ -326,10 +327,10 @@ export const FormPost = ({ navigation, route }) => {
               <DatePicker
                 modal
                 open={openEndDate}
-                date={getCurrentDate(postObject.endDateTime)}
+                date={getCurrentDate(postObject.endDate)}
                 onConfirm={(endDateTime) => {
                   setOpenEndDate(false);
-                  formatDate("endDateTime", endDateTime);
+                  formatDate("endDate", endDateTime);
                 }}
                 locale="es"
                 mode="date"
@@ -340,10 +341,10 @@ export const FormPost = ({ navigation, route }) => {
               <DatePicker
                 modal
                 open={openStartHour}
-                date={getCurrentHour(postObject.startHour)}
+                date={getCurrentHour(postObject.startTime)}
                 onConfirm={(startHour) => {
                   setOpenStartHour(false);
-                  formatHour("startHour", startHour);
+                  formatHour("startTime", startHour);
                 }}
                 locale="es"
                 mode="time"
@@ -355,10 +356,10 @@ export const FormPost = ({ navigation, route }) => {
               <DatePicker
                 modal
                 open={openEndHour}
-                date={getCurrentHour(postObject.endHour)}
+                date={getCurrentHour(postObject.endTime)}
                 onConfirm={(endHour) => {
                   setOpenEndHour(false);
-                  formatHour("endHour", endHour);
+                  formatHour("endTime", endHour);
                 }}
                 locale="es"
                 mode="time"
@@ -372,7 +373,7 @@ export const FormPost = ({ navigation, route }) => {
                   width: 100,
                   borderColor: "gray",
                   borderRadius: 10,
-                  backgroundColor: "#f5f5f5",
+                  backgroundColor: "white",
                   color: "black",
                   borderWidth: 1,
                   justifyContent: "center",
@@ -382,7 +383,7 @@ export const FormPost = ({ navigation, route }) => {
                 onPress={() => setOpenStartDate(true)}
               >
                 <Text style={{ color: "gray", textAlign: "center" }}>
-                  {dates.startDateTime ? dates.startDateTime : "Fecha inicio"}
+                  {dates.startDate ? dates.startDate : "Fecha inicio"}
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -390,7 +391,7 @@ export const FormPost = ({ navigation, route }) => {
                   width: 100,
                   borderColor: "gray",
                   borderRadius: 10,
-                  backgroundColor: "#f5f5f5",
+                  backgroundColor: "white",
                   color: "black",
                   borderWidth: 1,
                   justifyContent: "center",
@@ -400,64 +401,7 @@ export const FormPost = ({ navigation, route }) => {
                 onPress={() => setOpenEndDate(true)}
               >
                 <Text style={{ color: "gray", textAlign: "center" }}>
-                  {dates.endDateTime ? dates.endDateTime : "Fecha fin"}
-                </Text>
-              </TouchableOpacity>
-            </View>
-            <Text
-              style={{
-                fontSize: 17,
-                color: "black",
-                textAlign: "center",
-                marginTop: 15,
-              }}
-            >
-              Indique el horario laboral
-            </Text>
-            <View
-              style={{
-                flex: 1,
-                width: "90%",
-                flexDirection: "row",
-                justifyContent: "space-around",
-                marginTop: 15,
-                marginBottom: 25,
-              }}
-            >
-              <TouchableOpacity
-                style={{
-                  width: 100,
-                  borderColor: "gray",
-                  borderRadius: 10,
-                  backgroundColor: "#f5f5f5",
-                  color: "black",
-                  borderWidth: 1,
-                  justifyContent: "center",
-                  height: 53,
-                }}
-                activeOpacity={1}
-                onPress={() => setOpenStartHour(true)}
-              >
-                <Text style={{ color: "gray", textAlign: "center" }}>
-                  {dates.startHour ? dates.startHour : "Hora inicio"}
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={{
-                  width: 100,
-                  borderColor: "gray",
-                  borderRadius: 10,
-                  backgroundColor: "#f5f5f5",
-                  color: "black",
-                  borderWidth: 1,
-                  justifyContent: "center",
-                  height: 53,
-                }}
-                activeOpacity={1}
-                onPress={() => setOpenEndHour(true)}
-              >
-                <Text style={{ color: "gray", textAlign: "center" }}>
-                  {dates.endHour ? dates.endHour : "Hora fin"}
+                  {dates.endDate ? dates.endDate : "Fecha fin"}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -467,7 +411,8 @@ export const FormPost = ({ navigation, route }) => {
                 width: "45%",
                 flexDirection: "row",
                 justifyContent: "space-around",
-                marginVertical: 30,
+                marginTop: 30,
+                marginBottom: 20,
                 alignItems: "center",
               }}
             >
@@ -477,11 +422,74 @@ export const FormPost = ({ navigation, route }) => {
                 Flexible
               </Text>
               <Switch
-                value={flexibleValue}
-                onValueChange={() => setFlexibleValue(!flexibleValue)}
+                value={postObject.isFlexible}
+                onValueChange={() =>
+                  onChange("isFlexible", !postObject.isFlexible)
+                }
                 onColor={Colors.blue30}
               />
             </View>
+            {!postObject.isFlexible && (
+              <Text
+                style={{
+                  fontSize: 17,
+                  color: "black",
+                  textAlign: "center",
+                  marginTop: 15,
+                }}
+              >
+                Indique el horario laboral
+              </Text>
+            )}
+            {!postObject.isFlexible && (
+              <View
+                style={{
+                  flex: 1,
+                  width: "90%",
+                  flexDirection: "row",
+                  justifyContent: "space-around",
+                  marginTop: 15,
+                  marginBottom: 25,
+                }}
+              >
+                <TouchableOpacity
+                  style={{
+                    width: 100,
+                    borderColor: "gray",
+                    borderRadius: 10,
+                    backgroundColor: "white",
+                    color: "black",
+                    borderWidth: 1,
+                    justifyContent: "center",
+                    height: 53,
+                  }}
+                  activeOpacity={1}
+                  onPress={() => setOpenStartHour(true)}
+                >
+                  <Text style={{ color: "gray", textAlign: "center" }}>
+                    {dates.startTime ? dates.startTime : "Hora inicio"}
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{
+                    width: 100,
+                    borderColor: "gray",
+                    borderRadius: 10,
+                    backgroundColor: "white",
+                    color: "black",
+                    borderWidth: 1,
+                    justifyContent: "center",
+                    height: 53,
+                  }}
+                  activeOpacity={1}
+                  onPress={() => setOpenEndHour(true)}
+                >
+                  <Text style={{ color: "gray", textAlign: "center" }}>
+                    {dates.endTime ? dates.endTime : "Hora fin"}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            )}
             <View style={{ marginTop: 20 }}>
               <Text
                 style={{ fontSize: 17, color: "black", textAlign: "center" }}
@@ -503,33 +511,33 @@ export const FormPost = ({ navigation, route }) => {
                 placeholder={"Desde"}
                 placeholderTextColor={"gray"}
                 keyboardType="numeric"
-                value={postObject.startSalary}
+                value={postObject.salaryMin}
                 style={{
                   width: 100,
                   borderColor: "gray",
                   borderRadius: 10,
-                  backgroundColor: "#f5f5f5",
+                  backgroundColor: "white",
                   color: "black",
                   textAlign: "center",
                   borderWidth: 1,
                 }}
-                onChangeText={(text) => onChange("startSalary", text)}
+                onChangeText={(text) => onChange("salaryMin", text)}
               />
               <TextInput
                 placeholder={"Hasta"}
                 placeholderTextColor={"gray"}
                 keyboardType="numeric"
-                value={postObject.endSalary}
+                value={postObject.salaryMax}
                 style={{
                   width: 100,
                   borderColor: "gray",
                   borderRadius: 10,
-                  backgroundColor: "#f5f5f5",
+                  backgroundColor: "white",
                   color: "black",
                   textAlign: "center",
                   borderWidth: 1,
                 }}
-                onChangeText={(text) => onChange("endSalary", text)}
+                onChangeText={(text) => onChange("salaryMax", text)}
               />
             </View>
           </View>
@@ -550,7 +558,7 @@ export const FormPost = ({ navigation, route }) => {
                   label={"Registrarme"}
                   backgroundColor={Colors.blue30}
                   size={Button.sizes.large}
-                  // onPress={() => onHandleRegister()}
+                  onPress={onHableCreateNewPost}
                 />
               </View>
             </View>
@@ -576,6 +584,7 @@ const styles = StyleSheet.create({
     color: "black",
     borderRadius: 7,
     alignItems: "center",
+    backgroundColor: "white",
   },
   dropdown: {
     width: "100%",

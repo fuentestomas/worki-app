@@ -48,7 +48,7 @@ export const LoginScreen = ({ navigation }) => {
 
   const onHandleLogin = async () => {
     const data = await postUserLogin(userLogin);
-
+    console.log('user login;', data);
     const authObj = {
       id: data._id,
       name: data.fullName,

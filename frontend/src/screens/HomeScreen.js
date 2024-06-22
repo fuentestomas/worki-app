@@ -16,7 +16,7 @@ import restaurant from "../assets/img/restaurant.png";
 import plumber from "../assets/img/plumber.png";
 import cashier from "../assets/img/cashier.png";
 import plus from "../assets/img/plus.png";
-import { getPosts, postCreateNewPost } from "../services/posts";
+import { getPosts, getUserPost } from "../services/posts";
 import { PostItems } from "../components/PostItems";
 import { EmptyList } from "../components/EmptyList";
 
@@ -25,7 +25,7 @@ export const HomeScreen = ({ navigation }) => {
   const [searchText, setSearchText] = useState("");
   const [posts, setPosts] = useState({});
   const [refreshView, setRefreshView] = useState(Math.random());
-  const { role } = user;
+  const { role, id } = user;
 
   useEffect(() => {
     getData();
@@ -33,13 +33,6 @@ export const HomeScreen = ({ navigation }) => {
 
   const handleSearchTextChange = (text) => {
     setSearchText(text);
-  };
-
-  const handlePostNewPost = async () => {
-    const data = await postCreateNewPost();
-    if (data) {
-      setRefreshView(Math.random());
-    }
   };
 
   const getData = async () => {
@@ -156,12 +149,15 @@ export const HomeScreen = ({ navigation }) => {
       {(role === "person" || role === "business") && (
         <TouchableOpacity
           style={styles.floatingButton}
-          onPress={() => navigation.navigate("StackNavigator", {
-            screen: "FormPost",
-            params: {
-              refreshView
-            }
-          })}
+          onPress={async () => {
+            navigation.navigate("StackNavigator", {
+              screen: "FormPost",
+              params: {
+                refreshView
+              }
+            })
+        
+        }}
         >
           <Image source={plus} style={styles.plusIcon} />
         </TouchableOpacity>

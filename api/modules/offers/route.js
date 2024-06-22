@@ -10,7 +10,7 @@ router.post('/createOffer', async (req, res) => {
         const { image, title, description, startDate, endDate, startTime, endTime, salaryMin, salaryMax, userId, location } = req.body;
 
         // Ensure all required fields are provided
-        if (!image || !title || !description || !startDate || !endDate || !startTime || !endTime || !salaryMin || !salaryMax || !userId || !location) {
+        if (!image || !title || !description || !startDate || !endDate || !salaryMin || !salaryMax || !userId || !location) {
             return res.status(400).send({ message: "All fields are required." });
         }
 

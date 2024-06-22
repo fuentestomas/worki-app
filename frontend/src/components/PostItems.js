@@ -6,6 +6,19 @@ import clock from "../assets/img/clock.png";
 import restaurant from "../assets/img/restaurant.png";
 
 export const PostItems = ({ item, navigation }) => {
+  console.log("item:", item);
+
+  const formatSalaryValue = (num) => {
+    if (num < 1000) {
+      return num.toString();
+    }
+    if (num < 10000) {
+      let result = Math.round(num / 100) / 10;
+      return result % 1 === 0 ? result.toFixed(0) + 'k' : result.toFixed(1) + 'k';
+    }
+    return Math.round(num / 1000) + 'k';
+  }
+  
   return (
     <TouchableOpacity
       onPress={() => {
@@ -13,14 +26,19 @@ export const PostItems = ({ item, navigation }) => {
           screen: "PostDescription",
           params: {
             id: item._id,
-          }
+          },
         });
       }}
       activeOpacity={1}
       style={[styles.item]}
     >
       <Card flex style={{ width: "100%", maxWidth: 300, minHeight: 300 }}>
-        <Card.Image source={restaurant} style={styles.cardImage} />
+        <Card.Image
+          source={item.image ? {
+            uri: `data:image/jpeg;base64,${item.image}`,
+          } : restaurant}
+          style={styles.cardImage}
+        />
         <View
           style={{
             width: 90,
@@ -42,7 +60,7 @@ export const PostItems = ({ item, navigation }) => {
               fontFamily: "Avenir-Medium",
             }}
           >
-            {item.payRate || "Sin info"}
+            {item.salaryMax && item.salaryMin && `$${formatSalaryValue(item.salaryMin)} - $${formatSalaryValue(item.salaryMax)}` || "Sin info"}
           </Text>
         </View>
         <View style={{ height: 100, padding: 12, width: "100%" }}>
@@ -70,7 +88,7 @@ export const PostItems = ({ item, navigation }) => {
                 fontFamily: "Avenir-Medium",
               }}
             >
-              Av. Sabattini 3605, Córdoba, Argentina
+              {item.location ? item.location : "Sin info"}
             </Text>
           </View>
           <View
@@ -96,7 +114,7 @@ export const PostItems = ({ item, navigation }) => {
                   fontFamily: "Avenir-Medium",
                 }}
               >
-                15-06-2024 - 15-07-2024
+                {item.dateStart && item.dateEnd ? `${item.dateStart} - ${item.dateEnd}` : 'Sin info'}
               </Text>
             </View>
             <View
@@ -115,7 +133,7 @@ export const PostItems = ({ item, navigation }) => {
                   fontFamily: "Avenir-Medium",
                 }}
               >
-                09:00 - 18:00
+                {item.timeStart && item.timeEnd ? `${item.timeStart} - ${item.timeEnd}` : 'Flexible'}
               </Text>
             </View>
           </View>

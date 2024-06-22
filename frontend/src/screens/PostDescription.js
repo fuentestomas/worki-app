@@ -20,6 +20,7 @@ export const PostDescription = ({ navigation, route }) => {
     const data = await getPostDetail(id);
     if (data) {
       setPostDetail(data);
+      console.log('PostDescription:', data);
     }
   };
 
