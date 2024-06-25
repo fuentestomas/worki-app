@@ -2,7 +2,7 @@ import { Image, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView, ScrollView } from "react-native";
 import back from "../assets/img/back.png";
 import { getPostDetail } from "../services/posts";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import restaurant from "../assets/img/restaurant.png";
 import { Button, Colors, Icon } from "react-native-ui-lib";
 import pin from "../assets/img/pin.png";
@@ -23,7 +23,7 @@ export const PostDescription = ({ navigation, route }) => {
     React.useCallback(() => {
       getData();
     }, [isFocused, id])
-  )
+  );
 
   const getData = async () => {
     setIsLoading(true);
@@ -32,6 +32,19 @@ export const PostDescription = ({ navigation, route }) => {
       setPostDetail(data);
       setIsLoading(false);
     }
+  };
+
+  const validateNextView = () => {
+    if (role == "business" || role == "person") {
+      return navigation.navigate("TabNavigator", {
+        screen: "Home",
+      });
+    }
+
+    return navigation.navigate({
+      name: 'ApplicationScreen',
+      params: { id },
+    });
   };
 
   return (
@@ -237,6 +250,7 @@ export const PostDescription = ({ navigation, route }) => {
             }
             backgroundColor={Colors.blue20}
             size={Button.sizes.large}
+            onPress={() => validateNextView()}
           />
         </View>
       </View>
