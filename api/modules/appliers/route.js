@@ -79,7 +79,7 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
-router.get('/user/applications', verifyToken, async (req, res) => {
+router.get('/user/applications', async (req, res) => {
     try {
         let result = await modelMethods.getByUserId(req.userId);
         res.send(result);
