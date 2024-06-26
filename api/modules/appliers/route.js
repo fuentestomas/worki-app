@@ -19,10 +19,9 @@ router.post('/apply', async (req, res) => {
     }
 });
 
-router.get('/getUserApplication', async (req, res) => {
+router.get('/getUserApplication/:userId/:offerId', async (req, res) => {
     try {
-        const data = req.body;
-        let result = await modelMethods.getApplication(data.userId, data.offerId);
+        let result = await modelMethods.getApplication(req.params.userId, req.params.offerId);
         res.send(result);
     }
     catch (e) {
@@ -31,9 +30,9 @@ router.get('/getUserApplication', async (req, res) => {
     }
 });
 
-router.get('/user/applications', async (req, res) => {
+router.get('/user/applications/:userId', async (req, res) => {
     try {
-        let result = await modelMethods.getByUserId(req.body.userId);
+        let result = await modelMethods.getByUserId(req.params.userId);
         res.send(result);
     }
     catch (e) {
