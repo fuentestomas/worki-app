@@ -150,7 +150,7 @@ export const HomeScreen = ({ navigation }) => {
             {role === "worker" && (
               <View>
                 <View style={{ alignItems: "center" }}>
-                  <Text style={styles.cardsTitle}>Postulaciones</Text>
+                  <Text style={styles.cardsTitle}>Mis Postulaciones</Text>
                 </View>
                 <View
                   style={{
