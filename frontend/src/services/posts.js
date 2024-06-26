@@ -34,3 +34,10 @@ export const postCreateNewPost = async (body) => {
     throw error;
   }
 };
+
+export const getUserAppliedPosts = async (id) => {
+  return await client
+    .get(`/appliers/user/applications/${id}`)
+    .then((response) => response.data)
+    .catch((error) => console.error(error.message));
+};

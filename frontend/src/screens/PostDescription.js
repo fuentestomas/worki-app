@@ -9,25 +9,40 @@ import pin from "../assets/img/pin.png";
 import { AuthContext } from "../context/AuthContext";
 import LoaderKit from "react-native-loader-kit";
 import { useFocusEffect, useIsFocused } from "@react-navigation/native";
+import { getUserAppliedPosts } from "../services/appliers";
 
 export const PostDescription = ({ navigation, route }) => {
   const { user } = useContext(AuthContext);
-  const { role } = user;
+  const { role, id } = user;
   const [postDetails, setPostDetail] = useState({});
+  const [isUserApplied, setUserApplied] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const isFocused = useIsFocused();
 
-  const { id } = route.params;
+  const { idPost } = route.params;
 
   useFocusEffect(
     React.useCallback(() => {
       getData();
-    }, [isFocused, id])
+    }, [isFocused, idPost])
   );
 
   const getData = async () => {
     setIsLoading(true);
-    const data = await getPostDetail(id);
+    setUserApplied({})
+    if (role == "worker") {
+      const body = {
+        userId: id,
+        offerId: idPost,
+      };
+      const data = await getUserAppliedPosts(body);
+
+      if (data) {
+        setUserApplied(data);
+      }
+    }
+
+    const data = await getPostDetail(idPost);
     if (data) {
       setPostDetail(data);
       setIsLoading(false);
@@ -36,15 +51,26 @@ export const PostDescription = ({ navigation, route }) => {
 
   const validateNextView = () => {
     if (role == "business" || role == "person") {
-      return navigation.navigate("TabNavigator", {
-        screen: "Home",
+      return navigation.navigate({
+        name: "AppliersScreen",
+        params: { idPost },
       });
     }
 
     return navigation.navigate({
-      name: 'ApplicationScreen',
-      params: { id },
+      name: "ApplicationScreen",
+      params: { idPost },
     });
+  };
+
+  const validateButtonLabel = () => {
+    if (role == "business" || role == "person") {
+      return "Visualizar postulantes";
+    } else if (isUserApplied.status === "applied") {
+      return "Postulado";
+    }
+
+    return "Aplicar ahora";
   };
 
   return (
@@ -243,13 +269,10 @@ export const PostDescription = ({ navigation, route }) => {
               color: Colors.white,
               fontFamily: "Avenir-Medium",
             }}
-            label={
-              role == "business" || role == "person"
-                ? "Visualizar postulantes"
-                : "Aplicar ahora"
-            }
+            label={validateButtonLabel()}
             backgroundColor={Colors.blue20}
             size={Button.sizes.large}
+            disabled={isUserApplied.status === "applied"}
             onPress={() => validateNextView()}
           />
         </View>

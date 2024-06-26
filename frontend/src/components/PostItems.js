@@ -25,7 +25,7 @@ export const PostItems = ({ item, navigation }) => {
         navigation.navigate("StackNavigator", {
           screen: "PostDescription",
           params: {
-            id: item._id,
+            idPost: item._id,
           },
         });
       }}

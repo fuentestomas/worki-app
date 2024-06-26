@@ -52,15 +52,15 @@ class ModelMethods {
         return result;
     }
 
-    getByUserId(userId) {
-        let applications = model.find({ userId: userId }).populate('offerId')
+    async getByUserId(userId) {
+        let applications = await model.find({ userId: userId }).populate('offerId')
             .then((result) => {
                 return result;
             });
 
         let appliedOffers = [];
 
-        applications.foreach(element => {
+        applications.forEach(element => {
             element.offerId.applicationStatus = element.status;
             appliedOffers.push(element.offerId);
             console.log(element.offerId);

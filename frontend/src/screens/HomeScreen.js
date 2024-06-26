@@ -17,7 +17,7 @@ import restaurant from "../assets/img/restaurant.png";
 import plumber from "../assets/img/plumber.png";
 import cashier from "../assets/img/cashier.png";
 import plus from "../assets/img/plus.png";
-import { getPosts, getUserPost } from "../services/posts";
+import { getPosts, getUserAppliedPosts, getUserPost } from "../services/posts";
 import { PostItems } from "../components/PostItems";
 import { EmptyList } from "../components/EmptyList";
 import { useFocusEffect, useIsFocused } from "@react-navigation/native";
@@ -26,6 +26,7 @@ export const HomeScreen = ({ navigation }) => {
   const { user } = useContext(AuthContext);
   const [searchText, setSearchText] = useState("");
   const [posts, setPosts] = useState({});
+  const [appliedPosts, setAppliedPosts] = useState({})
   const [refreshView, setRefreshView] = useState(Math.random());
   const [isLoading, setIsLoading] = useState(true);
   const isFocused = useIsFocused();
@@ -48,7 +49,13 @@ export const HomeScreen = ({ navigation }) => {
       data = await getUserPost(id);
     } else {
       data = await getPosts();
+      const appliedPosts = await getUserAppliedPosts(id);
+      if (appliedPosts) {
+        setAppliedPosts(appliedPosts)
+      }
     }
+
+
     if (data) {
       setPosts(data);
       setIsLoading(false);
@@ -159,9 +166,9 @@ export const HomeScreen = ({ navigation }) => {
                     marginBottom: 40,
                   }}
                 >
-                  {POSTULACIONES_DATA.length > 0 ? (
+                  {appliedPosts.length > 0 ? (
                     <FlatList
-                      data={POSTULACIONES_DATA}
+                      data={appliedPosts}
                       renderItem={renderItem}
                       keyExtractor={(item, index) => index}
                       horizontal={true}

@@ -8,6 +8,7 @@ import {
   StyleSheet,
   Text,
   TextInput,
+  ToastAndroid,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -15,9 +16,13 @@ import { Button, Colors } from "react-native-ui-lib";
 import back from "../assets/img/back.png";
 import DocumentPicker from "react-native-document-picker";
 import RNFS from "react-native-fs";
+import { loadFromLocalStorage } from "../hooks/useLocalStorage";
+import { postApplyOffer } from "../services/appliers";
 
 const initialState = {
-  cvFile: "",
+  offerId: "",
+  userId: "",
+  cv: "",
   description: "",
 };
 
@@ -47,7 +52,7 @@ const ApplicationScreen = ({ navigation, route }) => {
   const [applicationObject, setApplicationObject] = useState(initialState);
   const [selectedFile, setSelectedFile] = useState({ isThereFile: false });
 
-  const { id } = route.params;
+  const { idPost } = route.params;
 
   const onChange = (name, value) => {
     setApplicationObject((prev) => ({
@@ -68,7 +73,7 @@ const ApplicationScreen = ({ navigation, route }) => {
 
         const updatedObject = {
           ...applicationObject,
-          cvFile: base64File,
+          cv: base64File,
         };
 
         const fileObject = {
@@ -101,15 +106,32 @@ const ApplicationScreen = ({ navigation, route }) => {
     setApplicationObject((prevState) => {
       return {
         ...prevState,
-        cvFile: "",
+        cv: "",
       };
     });
   };
 
-  const onHandleApply = () => {
-    console.log('applicationObject:', applicationObject);
-    console.log('Apllied!');
-  }
+  const showToast = (message) => {
+    ToastAndroid.show(message, ToastAndroid.SHORT);
+  };
+
+  const onHandleApply = async () => {
+    const { id } = await loadFromLocalStorage("auth");
+    const applyObject = {
+      ...applicationObject,
+      userId: id,
+      offerId: idPost,
+    };
+    const data = await postApplyOffer(applyObject);
+
+    if (data) {
+      showToast("Postulación exitosa!");
+      navigation.navigate({
+        name: "PostDescription",
+        params: { idPost },
+      });
+    }
+  };
 
   //   const handleFileDownload = async () => {
   //     if (base64File && selectedFile) {
@@ -138,7 +160,7 @@ const ApplicationScreen = ({ navigation, route }) => {
           onPress={() =>
             navigation.navigate({
               name: "PostDescription",
-              params: { id },
+              params: { idPost },
             })
           }
         >
@@ -202,7 +224,11 @@ const ApplicationScreen = ({ navigation, route }) => {
                       <Text
                         numberOfLines={1}
                         ellipsizeMode="tail"
-                        style={{ color: "white", textAlign: "center", paddingHorizontal: 10 }}
+                        style={{
+                          color: "white",
+                          textAlign: "center",
+                          paddingHorizontal: 10,
+                        }}
                       >
                         {selectedFile.name}
                       </Text>
@@ -268,26 +294,26 @@ const ApplicationScreen = ({ navigation, route }) => {
             />
           </View>
           <View style={{ width: "100%", alignItems: "center" }}>
-          <View
-            style={{
-              width: "100%",
-              alignItems: "center",
-              marginTop: 80,
-              marginBottom: 50,
-            }}
-          >
-            <View style={{ width: "65%" }}>
-              <Button
-                style={{ borderRadius: 15 }}
-                labelStyle={{ fontSize: 20 }}
-                label={"Postularme"}
-                backgroundColor={Colors.blue30}
-                size={Button.sizes.large}
-                onPress={onHandleApply}
-              />
+            <View
+              style={{
+                width: "100%",
+                alignItems: "center",
+                marginTop: 80,
+                marginBottom: 50,
+              }}
+            >
+              <View style={{ width: "65%" }}>
+                <Button
+                  style={{ borderRadius: 15 }}
+                  labelStyle={{ fontSize: 20 }}
+                  label={"Postularme"}
+                  backgroundColor={Colors.blue30}
+                  size={Button.sizes.large}
+                  onPress={onHandleApply}
+                />
+              </View>
             </View>
           </View>
-        </View>
         </ScrollView>
       </View>
     </View>
