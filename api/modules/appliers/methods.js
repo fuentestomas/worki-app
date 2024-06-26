@@ -53,7 +53,7 @@ class ModelMethods {
     }
 
     getByUserId(userId) {
-        let result = model.find({ userId: userId })
+        let result = model.find({ userId: userId }).populate('offerId')
             .then((result) => {
                 return result;
             });
