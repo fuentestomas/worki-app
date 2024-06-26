@@ -11,7 +11,9 @@ const app = express();
 let port = 3000;
 app.set('port', port);
 
-app.use(cors())
+app.use(cors());
+app.use(express.json({limit: '50mb'}));
+app.use(express.urlencoded({limit: '50mb'}));
 app.use(bodyParser.json());
 
 function loadRoutes() {
