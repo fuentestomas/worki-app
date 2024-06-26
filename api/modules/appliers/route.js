@@ -31,6 +31,17 @@ router.get('/getUserApplication', async (req, res) => {
     }
 });
 
+router.get('/user/applications', async (req, res) => {
+    try {
+        let result = await modelMethods.getByUserId(req.body.userId);
+        res.send(result);
+    }
+    catch (e) {
+        console.log(e);
+        res.sendStatus(400);
+    }
+});
+
 router.get('/', async (req, res) => {
     try {
         let result = await modelMethods.getAll();
@@ -71,17 +82,6 @@ router.put('/:id', upload.single('cv'), async (req, res) => {
 router.delete('/:id', async (req, res) => {
     try {
         let result = await modelMethods.delete(req.params.id);
-        res.send(result);
-    }
-    catch (e) {
-        console.log(e);
-        res.sendStatus(400);
-    }
-});
-
-router.get('/user/applications', async (req, res) => {
-    try {
-        let result = await modelMethods.getByUserId(req.body.userId);
         res.send(result);
     }
     catch (e) {
