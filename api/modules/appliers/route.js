@@ -7,13 +7,9 @@ const upload = multer({ dest: 'uploads/' });
 
 const modelMethods = new ModelMethods();
 
-router.post('/apply', upload.single('cv'), verifyToken, async (req, res) => {
+router.post('/apply', async (req, res) => {
     try {
-        const data = {
-            ...req.body,
-            userId: req.userId,
-            cv: req.file.path 
-        };
+        const data = req.body;
         let result = await modelMethods.create(data);
         res.status(201).send(result);
     }
