@@ -81,7 +81,7 @@ router.delete('/:id', async (req, res) => {
 
 router.get('/user/applications', async (req, res) => {
     try {
-        let result = await modelMethods.getByUserId(req.userId);
+        let result = await modelMethods.getByUserId(req.body.userId);
         res.send(result);
     }
     catch (e) {
