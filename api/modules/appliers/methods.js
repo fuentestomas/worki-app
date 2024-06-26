@@ -53,12 +53,20 @@ class ModelMethods {
     }
 
     getByUserId(userId) {
-        let result = model.find({ userId: userId }).populate('offerId')
+        let applications = model.find({ userId: userId }).populate('offerId')
             .then((result) => {
                 return result;
             });
+
+        let appliedOffers = [];
+
+        applications.foreach(element => {
+            element.offerId.applicationStatus = element.status;
+            appliedOffers.push(element.offerId);
+            console.log(element.offerId);
+        })
         
-        return result;
+        return appliedOffers;
     }
 
     getApplication(user, offer) {
