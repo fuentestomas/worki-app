@@ -19,6 +19,18 @@ router.post('/apply', async (req, res) => {
     }
 });
 
+router.get('/getUserApplication', async (req, res) => {
+    try {
+        const data = req.body;
+        let result = await modelMethods.getApplication(data.userId, data.offerId);
+        res.send(result);
+    }
+    catch (e) {
+        console.log(e);
+        res.sendStatus(400);
+    }
+});
+
 router.get('/', async (req, res) => {
     try {
         let result = await modelMethods.getAll();

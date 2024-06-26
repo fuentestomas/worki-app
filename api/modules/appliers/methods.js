@@ -61,6 +61,15 @@ class ModelMethods {
         return result;
     }
 
+    getApplication(user, offer) {
+        let result = model.findOne({ userId: user, offerId: offer })
+            .then((result) => {
+                return result;
+            });
+        
+        return result;
+    }
+
 }
 
 module.exports = {
