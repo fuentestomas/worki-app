@@ -2,8 +2,6 @@ import { useState } from "react";
 import {
   Alert,
   Image,
-  PermissionsAndroid,
-  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -25,29 +23,6 @@ const initialState = {
   cv: "",
   description: "",
 };
-
-const requestStoragePermission = async () => {
-  if (Platform.OS === "android") {
-    try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-        {
-          title: "Permiso de almacenamiento",
-          message: "Esta aplicación necesita acceso a tu almacenamiento",
-          buttonNeutral: "Pregúntame luego",
-          buttonNegative: "Cancelar",
-          buttonPositive: "OK",
-        }
-      );
-      return granted === PermissionsAndroid.RESULTS.GRANTED;
-    } catch (err) {
-      console.warn(err);
-      return false;
-    }
-  }
-  return true;
-};
-
 const ApplicationScreen = ({ navigation, route }) => {
   const [applicationObject, setApplicationObject] = useState(initialState);
   const [selectedFile, setSelectedFile] = useState({ isThereFile: false });
@@ -132,26 +107,6 @@ const ApplicationScreen = ({ navigation, route }) => {
       });
     }
   };
-
-  //   const handleFileDownload = async () => {
-  //     if (base64File && selectedFile) {
-  //       const hasPermission = await requestStoragePermission();
-  //       if (hasPermission) {
-  //         const downloadPath = `${RNFS.DownloadDirectoryPath}/${selectedFile.name}`;
-  //         try {
-  //           await RNFS.writeFile(downloadPath, base64File, 'base64');
-  //           Alert.alert('Éxito', `Archivo guardado en: ${downloadPath}`);
-  //         } catch (error) {
-  //           console.error('Error copying file: ', error);
-  //           Alert.alert('Error', 'No se pudo guardar el archivo');
-  //         }
-  //       } else {
-  //         Alert.alert('Error', 'Permiso de almacenamiento denegado');
-  //       }
-  //     } else {
-  //       Alert.alert('Error', 'Primero selecciona un archivo');
-  //     }
-  //   };
 
   return (
     <View style={{ flex: 1 }}>

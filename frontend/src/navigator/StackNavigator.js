@@ -13,6 +13,7 @@ import { PostDescription } from "../screens/PostDescription";
 import {FormPost} from "../screens/FormPost";
 import ApplicationScreen from "../screens/ApplicationScreen";
 import { AppliersScreen } from "../screens/AppliersScreen";
+import { ApplierDetailsScreen } from "../screens/ApplierDetailsScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -31,6 +32,7 @@ export const StackNavigator = () => {
       <Stack.Screen name="FormPost" component={FormPost} />
       <Stack.Screen name="ApplicationScreen" component={ApplicationScreen} />
       <Stack.Screen name="AppliersScreen" component={AppliersScreen} />
+      <Stack.Screen name="ApplierDetailsScreen" component={ApplierDetailsScreen} />
     </Stack.Navigator>
   );
 };
