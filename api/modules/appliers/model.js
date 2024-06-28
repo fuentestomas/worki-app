@@ -13,7 +13,8 @@ const ModelSchema = new mongoose.Schema(
         },
         description: { type: String },
         status: { type: String, default: 'applied', enum: ['applied', 'preselected', 'rejected', 'hired', 'finished'] },
-        cv: { type: String }  // New attribute for storing CV file path or URL
+        cv: { type: String },  // New attribute for storing CV file path or URL
+        fileName: { type: String }
     },
     { timestamps: true }
 );
