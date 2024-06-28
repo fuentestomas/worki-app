@@ -11,48 +11,57 @@ import {
 import back from "../assets/img/back.png";
 import { Colors } from "react-native-ui-lib";
 import { Dropdown } from "react-native-element-dropdown";
+import { getAppliersList, updateApplierStatus } from "../services/appliers";
 
-const appliersObject = [
-  { id: "1", fullName: "José Díaz", value: "2" },
-  { id: "2", fullName: "Manuel Turizo", value: "1" },
-  { id: "3", fullName: "Victoria Martinez", value: "2" },
-  { id: "4", fullName: "Jaime Gonzalez", value: "3" },
-  { id: "5", fullName: "Miguel Pistón", value: "2" },
-  // Agrega más elementos según sea necesario
-];
 
 const dropdownOptions = [
-  { label: "CONTRATADO", value: "1" },
-  { label: "PENDIENTE", value: "2" },
-  { label: "RECHAZADO", value: "3" },
+  { label: "CONTRATADO", value: "hired" },
+  { label: "PENDIENTE", value: "applied" },
+  { label: "RECHAZADO", value: "rejected" },
 ];
 
 export const AppliersScreen = ({ navigation, route }) => {
   const { idPost } = route.params;
 
-  const [value, setValue] = useState(dropdownOptions[1].value);
-  const [appliers, setAppliers] = useState(appliersObject);
+  const [appliers, setAppliers] = useState({});
 
   useEffect(() => {
     // Cambia el color del borde según el valor seleccionado
-  }, [value]);
+    getData();
+  }, []);
 
-  const onChangeDropdown = (value, index) => {
-    const updatedAppliers = [...appliers];
-    updatedAppliers[index].value = value;
+  const getData = async () => {
+    const data = await getAppliersList(idPost);
+    if (data) {
+      setAppliers(data);
+    }
+  };
 
-    setAppliers(updatedAppliers);
-  }
+  const onChangeDropdown = async (item, applier, index) => {
+    try {
+      const body = {
+        idApply: applier._id,
+        status: item.value,
+      };
+
+      await updateApplierStatus(body);
+      const updatedAppliers = [...appliers];
+      updatedAppliers[index].status = item.value;
+      setAppliers(updatedAppliers);
+    } catch (error) {
+      console.log("error actualización estado postulante:", error);
+    }
+  };
 
   const validateDropdownColor = (value) => {
     switch (value) {
-      case "1":
+      case "hired":
         return "green";
         break;
-      case "2":
+      case "applied":
         return Colors.blue30;
         break;
-      case "3":
+      case "rejected":
         return "red";
         break;
       default:
@@ -70,13 +79,13 @@ export const AppliersScreen = ({ navigation, route }) => {
           justifyContent: "flex-start",
         }}
         activeOpacity={1}
-        onPress={()=>{
+        onPress={() => {
           navigation.navigate({
             name: "ApplierDetailsScreen",
-            params: { idPost },
+            params: { idPost, applier },
           });
         }}
-        >
+      >
         <View>
           <View
             style={{
@@ -88,9 +97,13 @@ export const AppliersScreen = ({ navigation, route }) => {
             }}
           ></View>
         </View>
-        <View style={{width: '70%'}}>
-          <Text numberOfLines={1} ellipsizeMode="tail" style={{ color: "black" }}>
-            {applier.fullName}
+        <View style={{ width: "70%" }}>
+          <Text
+            numberOfLines={1}
+            ellipsizeMode="tail"
+            style={{ color: "black" }}
+          >
+            {applier.userId.fullName}
           </Text>
         </View>
       </TouchableOpacity>
@@ -105,20 +118,20 @@ export const AppliersScreen = ({ navigation, route }) => {
         <Dropdown
           style={[
             styles.dropdown,
-            { borderColor: validateDropdownColor(applier.value) },
+            { borderColor: validateDropdownColor(applier.status) },
           ]}
           placeholderStyle={[styles.placeholderStyle]}
           selectedTextStyle={[
             styles.selectedTextStyle,
-            { color: validateDropdownColor(applier.value) },
+            { color: validateDropdownColor(applier.status) },
           ]}
           data={dropdownOptions}
           itemTextStyle={styles.itemTextStyle}
           labelField="label"
           valueField="value"
-          value={applier.value}
+          value={applier.status}
           onChange={(item) => {
-            onChangeDropdown(item.value, index);
+            onChangeDropdown(item, applier, index);
           }}
         />
       </View>
@@ -154,7 +167,7 @@ export const AppliersScreen = ({ navigation, route }) => {
       <FlatList
         data={appliers}
         renderItem={({ item, index }) => <Item applier={item} index={index} />}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item._id}
         style={styles.container}
       />
     </SafeAreaView>

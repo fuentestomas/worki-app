@@ -22,6 +22,7 @@ const initialState = {
   userId: "",
   cv: "",
   description: "",
+  fileName: "",
 };
 const ApplicationScreen = ({ navigation, route }) => {
   const [applicationObject, setApplicationObject] = useState(initialState);
@@ -49,6 +50,7 @@ const ApplicationScreen = ({ navigation, route }) => {
         const updatedObject = {
           ...applicationObject,
           cv: base64File,
+          fileName: file.name,
         };
 
         const fileObject = {

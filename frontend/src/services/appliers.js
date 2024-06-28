@@ -17,3 +17,18 @@ export const getUserAppliedPosts = async (body) => {
     .then((response) => response.data)
     .catch((error) => console.error(error.message));
 };
+
+export const getAppliersList = async (idPost) => {
+  return await client
+    .get(`/appliers/getOfferApplications/${idPost}`)
+    .then((response) => response.data)
+    .catch((error) => console.error(error.message));
+};
+
+export const updateApplierStatus = async (body) => {
+  const { idApply, status } = body;
+  return await client
+    .put(`/appliers/updateStatus/${idApply.toString()}/${status}`)
+    .then((response) => response.data)
+    .catch((error) => console.error(error.message));
+};
