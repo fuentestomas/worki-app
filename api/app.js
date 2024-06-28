@@ -1,10 +1,8 @@
 const express = require('express');
 const fs = require('fs');
-const http = require('http');
 const path = require('path');
 const cors = require('cors');
 const bodyParser = require('body-parser')
-const mongoose = require('mongoose');
 
 const app = express();
 
@@ -39,10 +37,8 @@ function loadRoutes() {
 
 loadRoutes();
 
-app.use('/', (req, res) => res.send('Bienvenido a mi api'));
+//app.use('/', (req, res) => res.send('Bienvenido a mi api'));
 
-mongoose.connect('mongodb://localhost:27017/worki');
-
-http.createServer(app).listen(app.get('port'), () => {
-    console.log('Servidor corriendo en puerto: ', port)
-});
+module.exports = {
+    app
+}
