@@ -88,7 +88,7 @@ class ModelMethods {
     }
 
     updateApplicationStatus(id, newStatus) {
-        let result = model.findByIdAndUpdate(id, { status: newStatus }, { returnDocument: 'after' })
+        let result = model.findByIdAndUpdate(id, { status: newStatus }, { returnDocument: 'after' }).populate(['user'])
             .then((result) => {
                 return result;
             });
