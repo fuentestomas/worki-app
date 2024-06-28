@@ -19,9 +19,20 @@ router.post('/apply', async (req, res) => {
     }
 });
 
+router.get('/getOfferApplications/:offerId', async (req, res) => {
+    try {
+        let result = await modelMethods.getOfferApplications(req.params.offerId);
+        res.send(result);
+    }
+    catch (e) {
+        console.log(e);
+        res.sendStatus(400);
+    }
+});
+
 router.get('/getUserApplication/:userId/:offerId', async (req, res) => {
     try {
-        let result = await modelMethods.getApplication(req.params.userId, req.params.offerId);
+        let result = await modelMethods.getUserApplication(req.params.userId, req.params.offerId);
         res.send(result);
     }
     catch (e) {
@@ -55,6 +66,17 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
     try {
         let result = await modelMethods.getById(req.params.id);
+        res.send(result);
+    }
+    catch (e) {
+        console.log(e);
+        res.sendStatus(400);
+    }
+});
+
+router.put('/updateStatus/:id/:status', async (req, res) => {
+    try {
+        let result = await modelMethods.updateApplicationStatus(req.params.id, req.params.status);
         res.send(result);
     }
     catch (e) {

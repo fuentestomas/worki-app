@@ -69,8 +69,26 @@ class ModelMethods {
         return appliedOffers;
     }
 
-    getApplication(user, offer) {
+    getUserApplication(user, offer) {
         let result = model.findOne({ userId: user, offerId: offer })
+            .then((result) => {
+                return result;
+            });
+        
+        return result;
+    }
+
+    getOfferApplications(offer) {
+        let result = model.find({ offerId: offer })
+            .then((result) => {
+                return result;
+            });
+        
+        return result;
+    }
+
+    updateApplicationStatus(id, newStatus) {
+        let result = model.findByIdAndUpdate(id, { status: newStatus }, { returnDocument: 'after' })
             .then((result) => {
                 return result;
             });
