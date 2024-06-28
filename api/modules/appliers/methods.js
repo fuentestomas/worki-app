@@ -79,7 +79,7 @@ class ModelMethods {
     }
 
     getOfferApplications(offer) {
-        let result = model.find({ offerId: offer })
+        let result = model.find({ offerId: offer }).populate(['userId'])
             .then((result) => {
                 return result;
             });
@@ -88,7 +88,7 @@ class ModelMethods {
     }
 
     updateApplicationStatus(id, newStatus) {
-        let result = model.findByIdAndUpdate(id, { status: newStatus }, { returnDocument: 'after' }).populate(['userId'])
+        let result = model.findByIdAndUpdate(id, { status: newStatus }, { returnDocument: 'after' })
             .then((result) => {
                 return result;
             });
