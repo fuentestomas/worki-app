@@ -29,7 +29,7 @@ export const PostDescription = ({ navigation, route }) => {
 
   const getData = async () => {
     setIsLoading(true);
-    setUserApplied({})
+    setUserApplied({});
     if (role == "worker") {
       const body = {
         userId: id,
@@ -135,10 +135,29 @@ export const PostDescription = ({ navigation, route }) => {
                   style={{
                     width: 80,
                     height: 80,
-                    backgroundColor: "#350B0B",
                     borderRadius: 10,
+                    backgroundColor: postDetails.userId.photo
+                      ? "none"
+                      : "black",
                   }}
-                ></View>
+                >
+                  {postDetails.userId.photo && (
+                    <Image
+                      source={
+                        postDetails.userId.photo
+                          ? {
+                              uri: `data:image/jpeg;base64,${postDetails.userId.photo}`,
+                            }
+                          : restaurant
+                      }
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        borderRadius: 10,
+                      }}
+                    />
+                  )}
+                </View>
                 <View style={{ marginLeft: 16 }}>
                   <Text
                     style={{

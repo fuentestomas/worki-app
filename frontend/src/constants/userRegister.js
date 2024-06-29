@@ -1,5 +1,6 @@
 export let workerRegister = {
     fullName: "",
+    photo: "",
     emailAddress: "",
     password: "",
     roles: ["worker"],
@@ -13,6 +14,7 @@ export let workerRegister = {
 
 export const backupWorkerRegister = {
     fullName: "",
+    photo: "",
     emailAddress: "",
     password: "",
     roles: ["worker"],
@@ -26,6 +28,7 @@ export const backupWorkerRegister = {
 
 export let particularRegister = {
     fullName: "",
+    photo: "",
     emailAddress: "",
     password: "",
     roles: ["person"],
@@ -35,6 +38,7 @@ export let particularRegister = {
 
 export const backupParticularRegister = {
     fullName: "",
+    photo: "",
     emailAddress: "",
     password: "",
     roles: ["person"],
@@ -44,6 +48,7 @@ export const backupParticularRegister = {
 
 export let companyRegister = {
     fullName: "",
+    photo: "",
     emailAddress: "",
     password: "",
     roles: ["business"],
@@ -56,6 +61,7 @@ export let companyRegister = {
 
 export const backupCompanyRegister = {
     fullName: "",
+    photo: "",
     emailAddress: "",
     password: "",
     roles: ["business"],

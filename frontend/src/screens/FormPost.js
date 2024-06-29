@@ -157,6 +157,7 @@ export const FormPost = ({ navigation, route }) => {
   const onHableCreateNewPost = async () => {
     const { id } = await loadFromLocalStorage("auth");
     postObject.userId = id;
+    console.log('id:', id);
     try {
       const response = await postCreateNewPost(postObject);
       if (response) {

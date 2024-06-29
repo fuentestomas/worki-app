@@ -13,7 +13,6 @@ import { Colors } from "react-native-ui-lib";
 import { Dropdown } from "react-native-element-dropdown";
 import { getAppliersList, updateApplierStatus } from "../services/appliers";
 
-
 const dropdownOptions = [
   { label: "CONTRATADO", value: "hired" },
   { label: "PENDIENTE", value: "applied" },
@@ -91,11 +90,24 @@ export const AppliersScreen = ({ navigation, route }) => {
             style={{
               width: 35,
               height: 35,
-              backgroundColor: "brown",
+              backgroundColor: "black",
               borderRadius: 20,
               marginHorizontal: 15,
             }}
-          ></View>
+          >
+            {applier.userId.photo && (
+              <Image
+                source={{
+                  uri: `data:image/jpeg;base64,${applier.userId.photo}`,
+                }}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  borderRadius: 20,
+                }}
+              />
+            )}
+          </View>
         </View>
         <View style={{ width: "70%" }}>
           <Text

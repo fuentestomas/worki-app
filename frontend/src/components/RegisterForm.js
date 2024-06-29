@@ -1,9 +1,12 @@
 import { useContext, useEffect, useState } from "react";
-import { SafeAreaView, Text, TextInput, ScrollView, View } from "react-native";
+import { SafeAreaView, Text, TextInput, ScrollView, View, Image } from "react-native";
 import { Button, Colors, Switch } from "react-native-ui-lib";
 import { postUserRegister } from "../services/user";
 import { AuthContext } from "../context/AuthContext";
 import { saveToLocalStorage } from "../hooks/useLocalStorage";
+import { EmptyList } from "./EmptyList";
+import DocumentPicker from "react-native-document-picker";
+import RNFS from "react-native-fs";
 
 export const RegisterForm = ({ role, navigation, initialUserRegister }) => {
   const { login } = useContext(AuthContext);
@@ -69,10 +72,35 @@ export const RegisterForm = ({ role, navigation, initialUserRegister }) => {
     }
   };
 
+  const selectImage = async () => {
+
+    try {
+      const res = await DocumentPicker.pick({
+        type: [DocumentPicker.types.images],
+      });
+
+      if (res && res[0]) {
+        const file = res[0];
+        const base64Data = await RNFS.readFile(file.uri, "base64");
+
+        onChange("photo", base64Data);
+      } else {
+        Alert.alert("Error", "No se seleccionó ningún archivo");
+      }
+    } catch (err) {
+      if (DocumentPicker.isCancel(err)) {
+        console.log("Document selection was cancelled");
+      } else {
+        console.error("Unknown error: ", err);
+        Alert.alert("Error", "Ocurrió un error desconocido");
+      }
+    }
+  };
+
   const onChange = (name, value, type) => {
     setUserRegister((prev) => ({
       ...prev,
-      [name]: type === "string" ? value : Number(value),
+      [name]: value,
     }));
   };
 
@@ -92,6 +120,50 @@ export const RegisterForm = ({ role, navigation, initialUserRegister }) => {
             Registro {getRole()}
           </Text>
         </View>
+        <View style={{ alignItems: "center" }}>
+            <View style={{ marginTop: 42 }}>
+              <Text
+                style={{ fontSize: 17, color: "black", textAlign: "center" }}
+              >
+                Cargar imagen de la publicación
+              </Text>
+            </View>
+
+            <View
+              style={{
+                width: 250,
+                height: 250,
+                marginTop: 15,
+              }}
+            >
+              {userRegister.photo ? (
+                <View style={{ elevation: 2, marginVertical: 8 }}>
+                  <Image
+                    source={{
+                      uri: `data:image/jpeg;base64,${userRegister.photo}`,
+                    }}
+                    style={{ width: 250, height: 250, borderRadius: 13 }}
+                  />
+                </View>
+              ) : (
+                <EmptyList
+                  text={"Seleccione una imagen."}
+                  maxWidth={250}
+                  minHeight={250}
+                />
+              )}
+            </View>
+            <View style={{ marginTop: 30 }}>
+              <Button
+                style={{ borderRadius: 15 }}
+                labelStyle={{ fontSize: 15, padding: 2 }}
+                label={"Cargar imagen"}
+                backgroundColor={Colors.blue30}
+                size={Button.sizes.medium}
+                onPress={selectImage}
+              />
+            </View>
+          </View>
         { !userRegister?.uid && (
           <View>
             <View style={{ paddingHorizontal: 25, marginTop: 45 }}>

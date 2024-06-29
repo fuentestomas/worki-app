@@ -25,7 +25,6 @@ export const signInWithGoogle = async () => {
     const googleCredential = auth.GoogleAuthProvider.credential(idToken);
     // Sign-in the user with the credential
     const userCredential = await auth().signInWithCredential(googleCredential);
-    console.log(userCredential.user);
     const { displayName, email, photoURL, uid } = userCredential.user;
 
     return {
@@ -141,7 +140,7 @@ export const silentGoogleSignIn = async () => {
 
 export const onSilentGoogleSignIn = async (login, navigation, setLoading) => {
   const user = await loadFromLocalStorage("auth");
-  console.log("user:", user);
+  console.log('user:', user);
   if (user) {
     const userObj = user;
     login(userObj);

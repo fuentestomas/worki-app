@@ -15,6 +15,7 @@ import { Chip, lightColors } from "@rneui/themed";
 import { Button, Colors } from "react-native-ui-lib";
 import { postUserRegister } from "../services/user";
 import { AuthContext } from "../context/AuthContext";
+import { saveToLocalStorage } from "../hooks/useLocalStorage";
 
 export const FormCompanyScreen = ({ role, navigation, route }) => {
   const { login } = useContext(AuthContext);
@@ -48,7 +49,7 @@ export const FormCompanyScreen = ({ role, navigation, route }) => {
   };
 
   const validateLogin = (data) => {
-    login({
+    const userObj = {
       // Token
       // token: result.idToken,
       // User info
@@ -57,7 +58,9 @@ export const FormCompanyScreen = ({ role, navigation, route }) => {
       email: data.emailAddress,
       name: data.fullName,
       role: data.roles[0],
-    });
+    }
+    login(userObj);
+    saveToLocalStorage("auth", userObj);
     navigation.navigate("TabNavigator", {
       screen: "Home",
     });
