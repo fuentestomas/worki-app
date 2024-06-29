@@ -21,7 +21,7 @@ export const RegisterForm = ({ role, navigation, initialUserRegister }) => {
       case "person":
         return "Particular";
       case "company":
-        return "Empresa";
+        return "Organizacion";
       default:
         return "";
     }
@@ -96,11 +96,11 @@ export const RegisterForm = ({ role, navigation, initialUserRegister }) => {
           <View>
             <View style={{ paddingHorizontal: 25, marginTop: 45 }}>
               <Text style={{ paddingLeft: 3, color: "black", fontWeight: 600 }}>
-                {role === "company" ? "Nombre de la empresa" : "Nombre completo"}
+                {role === "company" ? "Nombre de la organizacion" : "Nombre completo"}
               </Text>
               <TextInput
                 placeholder={
-                  role === "company" ? "Nombre de la empresa" : "Nombre completo"
+                  role === "company" ? "Nombre de la organizacion" : "Nombre completo"
                 }
                 placeholderTextColor={"gray"}
                 style={styles.input}

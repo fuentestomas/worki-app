@@ -101,7 +101,7 @@ export const RoleScreen = ({ route, navigation }) => {
               <Text
                 style={{ fontSize: 20, color: "white", textAlign: "center" }}
               >
-                Quiero ser Empresa
+                Quiero ser Organizacion
               </Text>
             </View>
           </TouchableOpacity>

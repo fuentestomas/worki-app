@@ -5,7 +5,7 @@ const ModelSchema = new mongoose.Schema(
         fullName: { type: String, required: true },
         emailAddress: { type: String, required: true, unique: true },
         password: { type: String },
-        // roles disponibles person=particular, business=comercio/empresa, worker=trabajador
+        // roles disponibles person=particular, business=comercio/organizacion, worker=trabajador
         roles: {
             type: [
                 {
@@ -27,7 +27,8 @@ const ModelSchema = new mongoose.Schema(
         phoneNumber: { type: String },
         address: { type: String },
         avgPayRate: { type: String },   
-        location: { type: String}
+        location: { type: String},
+        photo: { type: String }
     },
     { timestamps: true }
 );
