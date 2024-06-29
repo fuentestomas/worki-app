@@ -12,6 +12,7 @@ import back from "../assets/img/back.png";
 import { Colors } from "react-native-ui-lib";
 import { Dropdown } from "react-native-element-dropdown";
 import { getAppliersList, updateApplierStatus } from "../services/appliers";
+import chat from "../assets/img/chat-applier.png";
 
 const dropdownOptions = [
   { label: "CONTRATADO", value: "hired" },
@@ -72,7 +73,7 @@ export const AppliersScreen = ({ navigation, route }) => {
     <View style={styles.item}>
       <TouchableOpacity
         style={{
-          width: "65%",
+          flex: 0.65,
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "flex-start",
@@ -121,12 +122,33 @@ export const AppliersScreen = ({ navigation, route }) => {
       </TouchableOpacity>
       <View
         style={{
-          width: "35%",
-          height: "100%",
+          flex: applier.status === "hired" ? 0.51 : 0.35,
+          minHeight: 54,
           paddingVertical: 10,
           paddingRight: 15,
+          flexDirection: applier.status === "hired" ? "row" : "column",
+          justifyContent: "center",
+          alignItems: "center",
         }}
       >
+        {applier.status === "hired" && (
+          <TouchableOpacity
+            style={{
+              width: 25,
+              height: 25,
+              justifyContent: "center",
+              alignItems: "center",
+              marginRight: 10,
+            }}
+            activeOpacity={1}
+            onPress={() => navigation.navigate({
+              name: "ChatScreen",
+              params: { fullName: applier.userId.fullName },
+            })}
+          >
+            <Image source={chat} style={{ width: "100%", height: "100%" }} />
+          </TouchableOpacity>
+        )}
         <Dropdown
           style={[
             styles.dropdown,
@@ -216,6 +238,7 @@ const styles = StyleSheet.create({
   dropdown: {
     width: "100%",
     height: "100%",
+    maxWidth: 140,
     borderRadius: 5,
     justifyContent: "center",
     alignItems: "center",
