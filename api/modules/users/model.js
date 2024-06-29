@@ -5,7 +5,7 @@ const ModelSchema = new mongoose.Schema(
         fullName: { type: String, required: true },
         emailAddress: { type: String, required: true, unique: true },
         password: { type: String },
-        // roles disponibles person=particular, business=comercio/empresa, worker=trabajador
+        // roles disponibles person=particular, business=comercio/organizacion, worker=trabajador
         roles: {
             type: [
                 {

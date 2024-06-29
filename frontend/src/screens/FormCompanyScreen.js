@@ -153,19 +153,19 @@ export const FormCompanyScreen = ({ role, navigation, route }) => {
       <ScrollView>
         <View style={{ marginLeft: 22, marginTop: 32 }}>
           <Text style={{ fontSize: 20, color: "black" }}>
-            Completar información de la Empresa
+            Completar información de la Organizacion
           </Text>
         </View>
         <View style={{ alignItems: "center" }}>
           <View style={{ marginTop: 42 }}>
             <Text style={{ fontSize: 17, color: "black", textAlign: "center" }}>
-              Indique el rubro de la empresa
+              Indique el rubro de la organizacion
             </Text>
           </View>
           <View style={styles.container}>
             <TextInput
               style={styles.input}
-              placeholder="Rubro de la empresa"
+              placeholder="Rubro de la organizacion"
               placeholderTextColor={"gray"}
               onChangeText={handleSearchTextChange}
               value={searchText}
@@ -234,7 +234,7 @@ export const FormCompanyScreen = ({ role, navigation, route }) => {
         </View>
         <View style={{ marginTop: 42 }}>
           <Text style={{ fontSize: 17, color: "black", textAlign: "center" }}>
-            Indique el rango de sueldos de la empresa
+            Indique el rango de sueldos de la organizacion
           </Text>
         </View>
         <View style={{ width: "100%", alignItems: "center" }}>
