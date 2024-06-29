@@ -38,7 +38,7 @@ export const ChatsScreen = ({ navigation }) => {
   useEffect(() => {}, []);
 
   return (
-    <View style={{ padding: 0 }}>
+    <View style={{ padding: 0, flex: 1}}>
       <View
         style={{
           width: "100%",
@@ -52,11 +52,20 @@ export const ChatsScreen = ({ navigation }) => {
           Chats
         </Text>
       </View>
-      <FlatList
-        data={chatsList}
-        renderItem={({ item }) => <Item item={item} navigation={navigation} />}
-        keyExtractor={(item) => item.id}
-      />
+      {
+        chatsList?.length > 0 ? (
+            <FlatList
+              data={chatsList}
+              renderItem={({ item }) => <Item item={item} navigation={navigation} />}
+              keyExtractor={(item) => item.id}
+            />
+
+        ) : (
+            <View style={{flex: 1, justifyContent: 'center'}}>
+                <Text style={{color: 'gray', textAlign: 'center', fontSize: 15}}>No hay conversaciones</Text>
+            </View>
+        )
+       }
     </View>
   );
 };
