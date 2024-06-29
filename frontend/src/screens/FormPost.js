@@ -567,7 +567,7 @@ export const FormPost = ({ navigation, route }) => {
                 <Button
                   style={{ borderRadius: 15 }}
                   labelStyle={{ fontSize: 20 }}
-                  label={"Registrarme"}
+                  label={"Publicar"}
                   backgroundColor={Colors.blue30}
                   size={Button.sizes.large}
                   onPress={onHableCreateNewPost}
