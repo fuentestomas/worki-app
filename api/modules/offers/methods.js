@@ -21,6 +21,7 @@ class ModelMethods {
         } else {
             return model.findById(id)
                 .then((result) => result)
+                .populate(['userId'])
                 .catch((err) => { throw err; });
         }
     }
