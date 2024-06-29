@@ -13,9 +13,6 @@ import {
   Image,
 } from "react-native";
 import { AuthContext } from "../context/AuthContext";
-import restaurant from "../assets/img/restaurant.png";
-import plumber from "../assets/img/plumber.png";
-import cashier from "../assets/img/cashier.png";
 import plus from "../assets/img/plus.png";
 import { getPosts, getUserAppliedPosts, getUserPost } from "../services/posts";
 import { PostItems } from "../components/PostItems";
@@ -267,29 +264,3 @@ const styles = StyleSheet.create({
   },
 });
 
-const POSTULACIONES_DATA = [
-  {
-    id: "1",
-    title: "Super Mami",
-    payRate: "$2k - $2.5k",
-    description:
-      "Estamos buscando un cajero dinámico y orientado al cliente para unirse a nuestro equipo. El candidato ideal debe tener excelentes habilidades de servicio al cliente, ser eficiente en el manejo de transacciones y poseer una actitud positiva y profesional.",
-    image: cashier,
-  },
-  {
-    id: "2",
-    title: "Plomero",
-    payRate: "$3k - $4k",
-    description:
-      "Se necesita un plomero con experiencia y compromiso para unirse a nuestro equipo. El candidato ideal debe poseer conocimientos sólidos en la instalación, mantenimiento y reparación de sistemas de plomería en entornos residenciales y comerciales, así como una actitud profesional y orientada al cliente.",
-    image: plumber,
-  },
-  {
-    id: "3",
-    title: "Burger King",
-    payRate: "$1.5k - $2k",
-    description:
-      "Se requiere un empleado motivado y entusiasta para unirse al equipo de Burger King. El candidato ideal debe tener excelentes habilidades de atención al cliente, capacidad para trabajar en equipo y un compromiso con la calidad y la limpieza.",
-    image: restaurant,
-  },
-];

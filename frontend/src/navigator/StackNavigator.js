@@ -14,6 +14,7 @@ import {FormPost} from "../screens/FormPost";
 import ApplicationScreen from "../screens/ApplicationScreen";
 import { AppliersScreen } from "../screens/AppliersScreen";
 import { ApplierDetailsScreen } from "../screens/ApplierDetailsScreen";
+import { ChatScreen } from "../screens/ChatScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -33,6 +34,7 @@ export const StackNavigator = () => {
       <Stack.Screen name="ApplicationScreen" component={ApplicationScreen} />
       <Stack.Screen name="AppliersScreen" component={AppliersScreen} />
       <Stack.Screen name="ApplierDetailsScreen" component={ApplierDetailsScreen} />
+      <Stack.Screen name="ChatScreen" component={ChatScreen} />
     </Stack.Navigator>
   );
 };
