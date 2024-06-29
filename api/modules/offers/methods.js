@@ -20,8 +20,8 @@ class ModelMethods {
                 .catch((err) => { throw err; });
         } else {
             return model.findById(id)
-                .then((result) => result)
                 .populate(['userId'])
+                .then((result) => result)
                 .catch((err) => { throw err; });
         }
     }
