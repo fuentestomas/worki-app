@@ -15,6 +15,7 @@ class ModelMethods {
         if (fields) {
             return model.findById(id)
                 .select(fields)
+                .populate(['userId'])
                 .then((result) => result)
                 .catch((err) => { throw err; });
         } else {
