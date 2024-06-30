@@ -6,7 +6,7 @@ const { ModelMethods: ChatMethods } = require('./modules/chat/methods');
 const { ModelMethods: MessageMethods } = require('./modules/message/methods');
 
 // Configuración de la base de datos
-mongoose.connect('mongodb://localhost:27017/worki').then(() => {
+mongoose.connect('mongodb+srv://dbuser:worki@workicluster.odp9wzi.mongodb.net/worki').then(() => {
   console.log('Conectado a la base de datos');
 }).catch(err => {
   console.error('Error al conectar a la base de datos:', err);
