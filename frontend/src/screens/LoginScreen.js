@@ -38,7 +38,7 @@ export const LoginScreen = ({ navigation }) => {
   const onChange = (name, value) => {
     setUserLogin({
       ...userLogin,
-      [name]: value,
+      [name]: name === "emailAddress" ? value.toLowerCase().trim() : value,
     });
   };
 

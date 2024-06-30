@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import DatePicker from "react-native-date-picker";
 import {
+  Alert,
   Image,
   ScrollView,
   StyleSheet,
@@ -12,7 +13,7 @@ import {
 } from "react-native";
 import back from "../assets/img/back.png";
 import { Button, Colors, Switch } from "react-native-ui-lib";
-import { launchImageLibrary } from "react-native-image-picker";
+import DocumentPicker from "react-native-document-picker";
 import RNFS from "react-native-fs";
 import { EmptyList } from "../components/EmptyList";
 import { loadFromLocalStorage } from "../hooks/useLocalStorage";
@@ -130,24 +131,28 @@ export const FormPost = ({ navigation, route }) => {
     return new Date();
   };
 
-  const selectImage = () => {
-    launchImageLibrary({ mediaType: "photo" }, (response) => {
-      if (response.didCancel) {
-        console.log("User cancelled image picker");
-      } else if (response.error) {
-        console.log("ImagePicker Error: ", response.error);
+  const selectImage = async () => {
+    try {
+      const res = await DocumentPicker.pick({
+        type: [DocumentPicker.types.images],
+      });
+
+      if (res && res[0]) {
+        const file = res[0];
+        const base64Data = await RNFS.readFile(file.uri, "base64");
+
+        onChange("image", base64Data);
       } else {
-        const source = { uri: response.assets[0].uri };
-        // Convertir la imagen a base64
-        RNFS.readFile(source.uri, "base64")
-          .then((base64Data) => {
-            onChange("image", base64Data);
-          })
-          .catch((error) => {
-            console.log("Error converting image to base64: ", error);
-          });
+        Alert.alert("Error", "No se seleccionó ningún archivo");
       }
-    });
+    } catch (err) {
+      if (DocumentPicker.isCancel(err)) {
+        console.log("Document selection was cancelled");
+      } else {
+        console.error("Unknown error: ", err);
+        Alert.alert("Error", "Ocurrió un error desconocido");
+      }
+    }
   };
 
   const showToast = (message) => {
