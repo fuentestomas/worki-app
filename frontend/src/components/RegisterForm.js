@@ -100,7 +100,7 @@ export const RegisterForm = ({ role, navigation, initialUserRegister }) => {
   const onChange = (name, value, type) => {
     setUserRegister((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: name === "emailAddress" ? value.toLowerCase().trim() : value,
     }));
   };
 
