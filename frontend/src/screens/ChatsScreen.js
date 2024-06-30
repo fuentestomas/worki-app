@@ -1,53 +1,74 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, FlatList, Image, TouchableOpacity } from "react-native";
 import { Colors } from "react-native-ui-lib";
-import { getUserChats } from "../services/chat"
-import { useFocusEffect } from '@react-navigation/native';
+import { getUserChats } from "../services/chat";
+import { useFocusEffect, useIsFocused } from "@react-navigation/native";
+import LoaderKit from "react-native-loader-kit";
 
 export const ChatsScreen = ({ navigation }) => {
   const [chatsList, setChatsList] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const isFocused = useIsFocused();
 
   useFocusEffect(
-    useCallback(() => {
+    React.useCallback(() => {
       getChats();
-    }, [])
+    }, [isFocused])
   );
 
   const getChats = async () => {
     const data = await getUserChats();
-    console.log('server chats', data);
+    console.log("server chats", data);
     setChatsList(data);
-  }
+    setIsLoading(false);
+  };
 
   return (
-    <View style={{ padding: 0, flex: 1}}>
-      <View
-        style={{
-          width: "100%",
-          height: 50,
-          backgroundColor: Colors.blue30,
-          justifyContent: "center",
-          borderBottomWidth: 1,
-        }}
-      >
-        <Text style={{ textAlign: "center", color: "white", fontSize: 17 }}>
-          Chats
-        </Text>
-      </View>
-      {
-        chatsList?.length > 0 ? (
+    <View style={{ padding: 0, flex: 1 }}>
+      {isLoading ? (
+        <View
+          style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+        >
+          <LoaderKit
+            style={{ width: 90, height: 90 }}
+            name={"BallClipRotate"}
+            color={Colors.blue30}
+          />
+        </View>
+      ) : (
+        <View>
+          <View
+            style={{
+              width: "100%",
+              height: 50,
+              backgroundColor: Colors.blue30,
+              justifyContent: "center",
+              borderBottomWidth: 1,
+            }}
+          >
+            <Text style={{ textAlign: "center", color: "white", fontSize: 17 }}>
+              Chats
+            </Text>
+          </View>
+          {chatsList?.length > 0 ? (
             <FlatList
               data={chatsList}
-              renderItem={({ item }) => <Item item={item} navigation={navigation} />}
-              keyExtractor={(item) => item.id}
+              renderItem={({ item }) => (
+                <Item item={item} navigation={navigation} />
+              )}
+              keyExtractor={(item, index) => index}
             />
-
-        ) : (
-            <View style={{flex: 1, justifyContent: 'center'}}>
-                <Text style={{color: 'gray', textAlign: 'center', fontSize: 15}}>No hay conversaciones</Text>
+          ) : (
+            <View style={{ flex: 1, justifyContent: "center" }}>
+              <Text
+                style={{ color: "gray", textAlign: "center", fontSize: 15 }}
+              >
+                No hay conversaciones
+              </Text>
             </View>
-        )
-       }
+          )}
+        </View>
+      )}
     </View>
   );
 };
@@ -61,7 +82,7 @@ const Item = ({ item, navigation }) => {
         borderBottomWidth: 1,
         justifyContent: "center",
         flexDirection: "row",
-        backgroundColor: 'white'
+        backgroundColor: "white",
       }}
       onPress={() => {
         navigation.navigate("StackNavigator", {
@@ -69,7 +90,7 @@ const Item = ({ item, navigation }) => {
           params: {
             fullName: item.chatUser.fullName,
             chatId: item._id.toString(),
-            contactId: item.chatUser.id
+            contactId: item.chatUser.id,
           },
         });
       }}
@@ -84,9 +105,9 @@ const Item = ({ item, navigation }) => {
             backgroundColor: "black",
             borderRadius: 20, // Changed to 20 to create a circular view
             marginHorizontal: 13,
-            overflow: 'hidden', // Ensures the image fits within the circle
-            justifyContent: 'center', // Centers the content
-            alignItems: 'center', // Centers the content
+            overflow: "hidden", // Ensures the image fits within the circle
+            justifyContent: "center", // Centers the content
+            alignItems: "center", // Centers the content
           }}
         >
           {item.chatUser.photo ? (

@@ -8,7 +8,7 @@ router.post('/', async (req, res) => {
     try {
         let result = await modelMethods.create(req.body);
         res.status(201).send(result);
-    }
+    } 
     catch (e) {
         console.log(e);
         res.sendStatus(400);
