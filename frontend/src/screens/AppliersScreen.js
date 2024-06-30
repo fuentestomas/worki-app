@@ -205,12 +205,27 @@ export const AppliersScreen = ({ navigation, route }) => {
           borderBottomColor: "gray",
         }}
       ></View>
-      <FlatList
+      {
+        appliers?.length > 0 ? (
+          <FlatList
+            data={appliers}
+            renderItem={({ item, index }) => <Item applier={item} index={index} />}
+            keyExtractor={(item) => item._id}
+            style={styles.container}
+          />
+
+        ) : (
+            <View style={{flex: 1, justifyContent: 'center'}}>
+                <Text style={{color: 'gray', textAlign: 'center', fontSize: 15}}>No hay postulaciones</Text>
+            </View>
+        )
+       }
+      {/* <FlatList
         data={appliers}
         renderItem={({ item, index }) => <Item applier={item} index={index} />}
         keyExtractor={(item) => item._id}
         style={styles.container}
-      />
+      /> */}
     </SafeAreaView>
   );
 };

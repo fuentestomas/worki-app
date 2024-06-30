@@ -22,7 +22,6 @@ router.post('/apply', async (req, res) => {
 router.get('/getOfferApplications/:offerId/:userId', async (req, res) => {
     try {
         let result = await modelMethods.getOfferApplications(req.params.offerId, req.params.userId);
-        console.log('last return', result[0].chat)
         res.send(result);
     }
     catch (e) {

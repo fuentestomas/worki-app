@@ -85,41 +85,24 @@ class ModelMethods {
                 return result;
             });
 
-        // result = await result.forEach(async (applier) => {
-        //     console.log('employerId', id);
-        //     console.log('applierId', applier.userId._id.toString());
-        //     const chat = await chatModel.findOne({ employerId: id, applierId: applier.userId._id.toString() });
-        //     console.log('chat', chat);
-        //     if (chat) {
-        //         applier.chat = chat._id.toString();
-        //     } else {
-        //         applier.chat = 'none';
-        //     }
-        // })
-
-        result = await this.getApplicationChats(result, id);
-        
-        console.log('resultChat', result);
-        
-        return result;
+        if (result.length === 0) {
+            return result;
+        } else {
+            result = await this.getApplicationChats(result, id);
+            return result;
+        }
     }
 
     async getApplicationChats(data, id) {
         // Use map to create an array of promises and await them using Promise.all
         const promises = data.map(async (applier) => {
-            console.log('employerId', id);
-            console.log('applierId', applier.userId._id.toString());
             const chat = await chatModel.findOne({ employerId: id, applierId: applier.userId._id.toString() });
-            console.log('chat', chat);
+
             let copy;
-            
             if (chat) {
-                console.log('chat id', chat._id.toString())
                 copy = { ...applier, chat: chat._id.toString()}
                 copy._doc.chat = copy.chat;
-                console.log('applierChat', applier.chat)
             } else {
-                //applier.chat = 'none';
                 copy = { ...applier, chat: 'none'}
                 copy._doc.chat = copy.chat;
             }
