@@ -33,6 +33,13 @@ export const AppliersScreen = ({ navigation, route }) => {
   const getData = async () => {
     const data = await getAppliersList(idPost);
     if (data) {
+      data.forEach((apply) => {
+        let aux = apply.cv;
+        apply.cv = '';
+        console.log('applier chat', apply);
+        apply.cv = aux;
+      })
+      //console.log('applier chat', data)
       setAppliers(data);
     }
   };
@@ -143,7 +150,7 @@ export const AppliersScreen = ({ navigation, route }) => {
             activeOpacity={1}
             onPress={() => navigation.navigate({
               name: "ChatScreen",
-              params: { fullName: applier.userId.fullName },
+              params: { fullName: applier.userId.fullName, chatId: applier.chat, contactId: applier.userId._id.toString() },
             })}
           >
             <Image source={chat} style={{ width: "100%", height: "100%" }} />

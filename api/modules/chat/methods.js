@@ -1,4 +1,5 @@
 const model = require('./model');
+const messagesModel = require('../message/model');
 
 class ModelMethods {
 
@@ -51,6 +52,15 @@ class ModelMethods {
         
         return result;
     }
+
+    getChatMessages(id) {
+        let result = messagesModel.find({ chatId: id }).sort('+_id')
+            .then((result) => {
+                return result;
+            });
+        
+        return result;
+    };
 
 }
 

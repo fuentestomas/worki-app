@@ -4,7 +4,8 @@ import { Colors } from "react-native-ui-lib";
 
 const chats = [
   {
-    id: 1,
+    id: '6681025c56ac282b341149fd',
+    employerId: '66806c778c869d9d0168808f',
     name: "Carlos Gutierrez",
     lastMessage:
       "Hola! Hemos visto tu postulación y nos encantaría agendar una entrevista para conocer un poco más acerca de vos. Tenes disponibilidad para mañana a las 14:00?",
@@ -13,7 +14,8 @@ const chats = [
     read: true,
   },
   {
-    id: 2,
+    id: '6681025c56ac282b341149fd',
+    employerId: '66806c778c869d9d0168808f',
     name: "Luciana Acosta",
     lastMessage:
       "Hola! Hemos visto tu postulación y nos encantaría agendar una entrevista para conocer un poco más acerca de vos. Tenes disponibilidad para mañana a las 14:00?",
@@ -22,7 +24,8 @@ const chats = [
     read: false,
   },
   {
-    id: 3,
+    id: '6681025c56ac282b341149fd',
+    employerId: '66806c778c869d9d0168808f',
     name: "Marcos García",
     lastMessage:
       "Hola! Hemos visto tu postulación y nos encantaría agendar una entrevista para conocer un poco más acerca de vos. Tenes disponibilidad para mañana a las 14:00?",
@@ -86,6 +89,8 @@ const Item = ({ item, navigation }) => {
           screen: "ChatScreen",
           params: {
             fullName: item.name,
+            chatId: item.id,
+            contactId: item.employerId
           },
         });
       }}

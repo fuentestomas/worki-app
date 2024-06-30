@@ -1,7 +1,9 @@
 const { app } = require('./app');
 const http = require('http');
 const mongoose = require('mongoose');
-const WebSocket = require('ws');
+const { Server } = require('socket.io');
+const { ModelMethods: ChatMethods } = require('./modules/chat/methods');
+const { ModelMethods: MessageMethods } = require('./modules/message/methods');
 
 // Configuración de la base de datos
 mongoose.connect('mongodb://localhost:27017/worki').then(() => {
@@ -22,28 +24,56 @@ server.listen(PORT, () => {
 });
 
 // Configuración de WebSocket
-const wss = new WebSocket.Server({ server });
-
-wss.on('connection', (ws) => {
-  console.log('New client connected');
-
-  ws.on('message', (message) => {
-    console.log(`Received message: ${message}`);
-
-    // Reenvía el mensaje a todos los clientes conectados
-    wss.clients.forEach(client => {
-      if (client.readyState === WebSocket.OPEN) {
-        client.send(message.toString());
-      }
-    });
-  });
-
-  ws.on('close', () => {
-    console.log('Client disconnected');
-  });
+const io = new Server(server, {
+  cors: {
+    origin: '*'
+  }
 });
 
-// Ruta de prueba
-app.get('/', (req, res) => {
-  res.send('Hello World');
+io.on('connection', (socket) => {
+  console.log('socket id', socket.id);
+
+  socket.on('join', (chatId) => {
+    socket.join(chatId);
+  });
+
+  socket.on('message', async (messageObj) => {
+    console.log(`Received message: ${messageObj.message}`);
+    // Creates new chat if not exists
+    if (messageObj.chatId === 'none') {
+      try {
+        const chatMethods = new ChatMethods();
+        let newChat = {
+          employerId: messageObj.from,
+          applierId: messageObj.to
+        };
+        newChat = await chatMethods.create(newChat);
+        messageObj.chatId = newChat._id.toString();
+        console.log('newChatId', messageObj.chatId);
+        socket.join(messageObj.chatId);
+      } catch (e) {
+        console.log('ERROR: ', e);
+        return;
+      }
+    }
+
+    //Add message to DB
+    let newMessage;
+    try {
+      const messageMethods = new MessageMethods();
+      newMessage = {
+        chatId: messageObj.chatId,
+        userId: messageObj.from,
+        message: messageObj.message
+      };
+      await messageMethods.create(newMessage);
+    }
+    catch (e) {
+      console.log('ERROR:', e);
+      return;
+    }
+
+    // Emit the new message to the specific room
+    io.to(messageObj.chatId).emit('message', { newMessage });
+  });
 });

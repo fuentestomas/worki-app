@@ -1,4 +1,5 @@
 import { client } from "./client";
+import { loadFromLocalStorage } from "../hooks/useLocalStorage";
 
 export const postApplyOffer = async (body) => {
   try {
@@ -19,8 +20,9 @@ export const getUserAppliedPosts = async (body) => {
 };
 
 export const getAppliersList = async (idPost) => {
+  const { id } = await loadFromLocalStorage("auth");
   return await client
-    .get(`/appliers/getOfferApplications/${idPost}`)
+    .get(`/appliers/getOfferApplications/${idPost}/${id}`)
     .then((response) => response.data)
     .catch((error) => console.error(error.message));
 };

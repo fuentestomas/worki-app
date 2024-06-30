@@ -12,7 +12,6 @@ const ModelSchema = new mongoose.Schema(
           ref: "users"
         },
         message: { type: String },
-        date: { type: Date },
     },
     { timestamps: true }
 );

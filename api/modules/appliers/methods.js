@@ -1,4 +1,5 @@
 const model = require('./model');
+const chatModel = require('../chat/model');
 
 class ModelMethods {
 
@@ -78,13 +79,61 @@ class ModelMethods {
         return result;
     }
 
-    getOfferApplications(offer) {
-        let result = model.find({ offerId: offer }).populate(['userId'])
+    async getOfferApplications(offer, id) {
+        let result = await model.find({ offerId: offer }).populate(['userId'])
             .then((result) => {
                 return result;
             });
+
+        // result = await result.forEach(async (applier) => {
+        //     console.log('employerId', id);
+        //     console.log('applierId', applier.userId._id.toString());
+        //     const chat = await chatModel.findOne({ employerId: id, applierId: applier.userId._id.toString() });
+        //     console.log('chat', chat);
+        //     if (chat) {
+        //         applier.chat = chat._id.toString();
+        //     } else {
+        //         applier.chat = 'none';
+        //     }
+        // })
+
+        result = await this.getApplicationChats(result, id);
+        
+        console.log('resultChat', result);
         
         return result;
+    }
+
+    async getApplicationChats(data, id) {
+        // Use map to create an array of promises and await them using Promise.all
+        const promises = data.map(async (applier) => {
+            console.log('employerId', id);
+            console.log('applierId', applier.userId._id.toString());
+            const chat = await chatModel.findOne({ employerId: id, applierId: applier.userId._id.toString() });
+            console.log('chat', chat);
+            let copy;
+            
+            if (chat) {
+                console.log('chat id', chat._id.toString())
+                copy = { ...applier, chat: chat._id.toString()}
+                copy._doc.chat = copy.chat;
+                console.log('applierChat', applier.chat)
+            } else {
+                //applier.chat = 'none';
+                copy = { ...applier, chat: 'none'}
+                copy._doc.chat = copy.chat;
+            }
+            
+            console.log('applier', copy)
+            return copy._doc;
+        });
+
+        // Await all promises
+        const updatedData = await Promise.all(promises);
+
+        console.log('new data', updatedData);
+
+        return updatedData;
     }
 
     updateApplicationStatus(id, newStatus) {
