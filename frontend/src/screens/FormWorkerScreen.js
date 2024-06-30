@@ -45,7 +45,7 @@ export const FormWorkerScreen = ({ role, navigation, route }) => {
       email: data.emailAddress,
       name: data.fullName,
       role: data.roles[0],
-    }
+    };
     login(userObj);
     saveToLocalStorage("auth", userObj);
     navigation.navigate("TabNavigator", {
@@ -98,22 +98,26 @@ export const FormWorkerScreen = ({ role, navigation, route }) => {
             Completar información del Trabajador
           </Text>
         </View>
-        <View style={{ alignItems: "center" }}>
-          <View style={{ marginTop: 42 }}>
-            <Text style={{ fontSize: 17, color: "black", textAlign: "center" }}>
-              Indique su Título o Trabajo
-            </Text>
+        {isProfessional && (
+          <View style={{ alignItems: "center" }}>
+            <View style={{ marginTop: 42 }}>
+              <Text
+                style={{ fontSize: 17, color: "black", textAlign: "center" }}
+              >
+                Indique su Título o Trabajo
+              </Text>
+            </View>
+            <View style={styles.container}>
+              <TextInput
+                style={styles.input}
+                placeholder="Título o trabajo"
+                placeholderTextColor={"gray"}
+                value={userRegister?.job}
+                onChangeText={(text) => onChange("job", text, "string")}
+              />
+            </View>
           </View>
-          <View style={styles.container}>
-            <TextInput
-              style={styles.input}
-              placeholder="Título o trabajo"
-              placeholderTextColor={"gray"}
-              value={userRegister?.job}
-              onChangeText={(text) => onChange("job", text, "string")}
-            />
-          </View>
-        </View>
+        )}
         <View style={{ paddingHorizontal: 25, marginTop: 45 }}>
           <Text
             style={{
