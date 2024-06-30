@@ -3,7 +3,7 @@ import { Card, Colors, Icon, View } from "react-native-ui-lib";
 import calendar from "../assets/img/calendar-2.png";
 import pin from "../assets/img/pin.png";
 import clock from "../assets/img/clock.png";
-import restaurant from "../assets/img/restaurant.png";
+import restaurant from "../assets/img/working.png";
 
 export const PostItems = ({ item, navigation }) => {
   const formatSalaryValue = (num) => {

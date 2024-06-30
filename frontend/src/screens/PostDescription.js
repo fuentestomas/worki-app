@@ -3,7 +3,7 @@ import { SafeAreaView, ScrollView } from "react-native";
 import back from "../assets/img/back.png";
 import { getPostDetail } from "../services/posts";
 import React, { useContext, useState } from "react";
-import restaurant from "../assets/img/restaurant.png";
+import restaurant from "../assets/img/working.png";
 import { Button, Colors, Icon } from "react-native-ui-lib";
 import pin from "../assets/img/pin.png";
 import { AuthContext } from "../context/AuthContext";
