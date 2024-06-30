@@ -13,6 +13,8 @@ import { Colors } from "react-native-ui-lib";
 import { Dropdown } from "react-native-element-dropdown";
 import { getAppliersList, updateApplierStatus } from "../services/appliers";
 import chat from "../assets/img/chat-applier.png";
+import { useIsFocused } from "@react-navigation/native";
+import LoaderKit from "react-native-loader-kit";
 
 const dropdownOptions = [
   { label: "CONTRATADO", value: "hired" },
@@ -24,7 +26,8 @@ export const AppliersScreen = ({ navigation, route }) => {
   const { idPost } = route.params;
 
   const [appliers, setAppliers] = useState({});
-
+  const [isLoading, setIsLoading] = useState(true);
+  const isFocused = useIsFocused();
   useEffect(() => {
     // Cambia el color del borde según el valor seleccionado
     getData();
@@ -35,12 +38,13 @@ export const AppliersScreen = ({ navigation, route }) => {
     if (data) {
       data.forEach((apply) => {
         let aux = apply.cv;
-        apply.cv = '';
-        console.log('applier chat', apply);
+        apply.cv = "";
+        console.log("applier chat", apply);
         apply.cv = aux;
-      })
+      });
       //console.log('applier chat', data)
       setAppliers(data);
+      setIsLoading(false);
     }
   };
 
@@ -148,10 +152,16 @@ export const AppliersScreen = ({ navigation, route }) => {
               marginRight: 10,
             }}
             activeOpacity={1}
-            onPress={() => navigation.navigate({
-              name: "ChatScreen",
-              params: { fullName: applier.userId.fullName, chatId: applier.chat, contactId: applier.userId._id.toString() },
-            })}
+            onPress={() =>
+              navigation.navigate({
+                name: "ChatScreen",
+                params: {
+                  fullName: applier.userId.fullName,
+                  chatId: applier.chat,
+                  contactId: applier.userId._id.toString(),
+                },
+              })
+            }
           >
             <Image source={chat} style={{ width: "100%", height: "100%" }} />
           </TouchableOpacity>
@@ -181,45 +191,62 @@ export const AppliersScreen = ({ navigation, route }) => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <TouchableOpacity
-        onPress={() =>
-          navigation.navigate({
-            name: "PostDescription",
-            params: { idPost },
-          })
-        }
-      >
-        <View style={styles.backButton}>
-          <Image style={styles.backImage} source={back} />
-        </View>
-      </TouchableOpacity>
-      <View style={{ marginBottom: 40 }}>
-        <Text style={{ color: "black", fontSize: 20, textAlign: "center" }}>
-          Listado de postulantes
-        </Text>
-      </View>
-      <View
-        style={{
-          width: "100%",
-          borderBottomWidth: 1,
-          borderBottomColor: "gray",
-        }}
-      ></View>
-      {
-        appliers?.length > 0 ? (
-          <FlatList
-            data={appliers}
-            renderItem={({ item, index }) => <Item applier={item} index={index} />}
-            keyExtractor={(item) => item._id}
-            style={styles.container}
+      {isLoading ? (
+        <View
+          style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+        >
+          <LoaderKit
+            style={{ width: 90, height: 90 }}
+            name={"BallClipRotate"}
+            color={Colors.blue30}
           />
-
-        ) : (
-            <View style={{flex: 1, justifyContent: 'center'}}>
-                <Text style={{color: 'gray', textAlign: 'center', fontSize: 15}}>No hay postulaciones</Text>
+        </View>
+      ) : (
+        <View style={styles.safeArea}>
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate({
+                name: "PostDescription",
+                params: { idPost },
+              })
+            }
+          >
+            <View style={styles.backButton}>
+              <Image style={styles.backImage} source={back} />
             </View>
-        )
-       }
+          </TouchableOpacity>
+          <View style={{ marginBottom: 40 }}>
+            <Text style={{ color: "black", fontSize: 20, textAlign: "center" }}>
+              Listado de postulantes
+            </Text>
+          </View>
+          <View
+            style={{
+              width: "100%",
+              borderBottomWidth: 1,
+              borderBottomColor: "gray",
+            }}
+          ></View>
+          {appliers?.length > 0 ? (
+            <FlatList
+              data={appliers}
+              renderItem={({ item, index }) => (
+                <Item applier={item} index={index} />
+              )}
+              keyExtractor={(item) => item._id}
+              style={styles.container}
+            />
+          ) : (
+            <View style={{ flex: 1, justifyContent: "center" }}>
+              <Text
+                style={{ color: "gray", textAlign: "center", fontSize: 15 }}
+              >
+                No hay postulaciones
+              </Text>
+            </View>
+          )}
+        </View>
+      )}
       {/* <FlatList
         data={appliers}
         renderItem={({ item, index }) => <Item applier={item} index={index} />}
