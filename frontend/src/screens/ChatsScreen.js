@@ -1,44 +1,23 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { View, Text, FlatList, Image, TouchableOpacity } from "react-native";
 import { Colors } from "react-native-ui-lib";
-
-const chats = [
-  {
-    id: '6681025c56ac282b341149fd',
-    employerId: '66806c778c869d9d0168808f',
-    name: "Carlos Gutierrez",
-    lastMessage:
-      "Hola! Hemos visto tu postulación y nos encantaría agendar una entrevista para conocer un poco más acerca de vos. Tenes disponibilidad para mañana a las 14:00?",
-    dateTime: "15:50",
-    image: "",
-    read: true,
-  },
-  {
-    id: '6681025c56ac282b341149fd',
-    employerId: '66806c778c869d9d0168808f',
-    name: "Luciana Acosta",
-    lastMessage:
-      "Hola! Hemos visto tu postulación y nos encantaría agendar una entrevista para conocer un poco más acerca de vos. Tenes disponibilidad para mañana a las 14:00?",
-    dateTime: "11:30",
-    image: "",
-    read: false,
-  },
-  {
-    id: '6681025c56ac282b341149fd',
-    employerId: '66806c778c869d9d0168808f',
-    name: "Marcos García",
-    lastMessage:
-      "Hola! Hemos visto tu postulación y nos encantaría agendar una entrevista para conocer un poco más acerca de vos. Tenes disponibilidad para mañana a las 14:00?",
-    dateTime: "08:15",
-    image: "",
-    read: true,
-  },
-];
+import { getUserChats } from "../services/chat"
+import { useFocusEffect } from '@react-navigation/native';
 
 export const ChatsScreen = ({ navigation }) => {
-  const [chatsList, setChatsList] = useState(chats);
+  const [chatsList, setChatsList] = useState([]);
 
-  useEffect(() => {}, []);
+  useFocusEffect(
+    useCallback(() => {
+      getChats();
+    }, [])
+  );
+
+  const getChats = async () => {
+    const data = await getUserChats();
+    console.log('server chats', data);
+    setChatsList(data);
+  }
 
   return (
     <View style={{ padding: 0, flex: 1}}>
@@ -88,9 +67,9 @@ const Item = ({ item, navigation }) => {
         navigation.navigate("StackNavigator", {
           screen: "ChatScreen",
           params: {
-            fullName: item.name,
-            chatId: item.id,
-            contactId: item.employerId
+            fullName: item.chatUser.fullName,
+            chatId: item._id.toString(),
+            contactId: item.chatUser.id
           },
         });
       }}
@@ -103,17 +82,31 @@ const Item = ({ item, navigation }) => {
             width: 40,
             height: 40,
             backgroundColor: "black",
-            borderRadius: 100,
+            borderRadius: 20, // Changed to 20 to create a circular view
             marginHorizontal: 13,
+            overflow: 'hidden', // Ensures the image fits within the circle
+            justifyContent: 'center', // Centers the content
+            alignItems: 'center', // Centers the content
           }}
-        ></View>
+        >
+          {item.chatUser.photo ? (
+            <Image
+              source={{ uri: `data:image/jpeg;base64,${item.chatUser.photo}` }}
+              style={{
+                width: 40,
+                height: 40,
+              }}
+              resizeMode="cover" // Ensures the image covers the entire area
+            />
+          ) : null}
+        </View>
         <View style={{ width: "80%" }}>
           <Text style={{ color: "black", fontSize: 17, fontWeight: 500 }}>
-            {item.name}
+            {item.chatUser.fullName}
           </Text>
           <Text
             style={{
-              color: item.read ? "gray" : "black",
+              color: "gray",
               fontSize: 13,
               marginLeft: 1,
               fontWeight: 500,
@@ -121,20 +114,20 @@ const Item = ({ item, navigation }) => {
             numberOfLines={1}
             ellipsizeMode="tail"
           >
-            {item.lastMessage}
+            {item.lastMsg.message}
           </Text>
         </View>
       </View>
       <View style={{ justifyContent: "center", width: "15%" }}>
         <Text
           style={{
-            color: item.read ? "gray" : "black",
+            color: "gray",
             textAlign: "right",
             marginRight: 13,
             fontWeight: 500,
           }}
         >
-          {item.dateTime}
+          {item.lastMsg.time}
         </Text>
       </View>
     </TouchableOpacity>

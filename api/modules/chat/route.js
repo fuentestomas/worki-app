@@ -26,6 +26,17 @@ router.get('/', async (req, res) => {
     }
 });
 
+router.get('/getUserChats/:userId/:role', async (req, res) => {
+    try {
+        let result = await modelMethods.getUserChats(req.params.userId, req.params.role);
+        res.send(result);
+    }
+    catch (e) {
+        console.log(e);
+        res.sendStatus(400);
+    }
+});
+
 router.get('/getInfo/:chatId', async (req, res) => {
     try {
         let result = await modelMethods.getChatMessages(req.params.chatId);
