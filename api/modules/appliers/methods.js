@@ -107,14 +107,11 @@ class ModelMethods {
                 copy._doc.chat = copy.chat;
             }
             
-            console.log('applier', copy)
             return copy._doc;
         });
 
         // Await all promises
         const updatedData = await Promise.all(promises);
-
-        console.log('new data', updatedData);
 
         return updatedData;
     }
