@@ -136,12 +136,12 @@ export const PostDescription = ({ navigation, route }) => {
                     width: 80,
                     height: 80,
                     borderRadius: 10,
-                    backgroundColor: postDetails.userId.photo
+                    backgroundColor: postDetails?.userId?.photo
                       ? "none"
                       : "black",
                   }}
                 >
-                  {postDetails.userId.photo && (
+                  {postDetails?.userId?.photo && (
                     <Image
                       source={
                         postDetails.userId.photo

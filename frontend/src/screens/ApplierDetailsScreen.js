@@ -1,26 +1,49 @@
-import { Alert, Image, ScrollView, ToastAndroid } from "react-native";
+import React, { useEffect } from "react";
+import { Alert, Image, ScrollView, ToastAndroid, Platform } from "react-native";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Button, Colors } from "react-native-ui-lib";
 import back from "../assets/img/back.png";
 import RNFetchBlob from "rn-fetch-blob";
+import PushNotification from "react-native-push-notification";
+import FileViewer from "react-native-file-viewer";
 
 export const ApplierDetailsScreen = ({ navigation, route }) => {
   const { idPost, applier } = route.params;
 
-  const downloadPdf = () => {
+  useEffect(() => {
+    PushNotification.configure({
+      onNotification: function (notification) {
+        if (notification.data.filePath) {
+          FileViewer.open(notification.data.filePath)
+            .then(() => {
+            })
+            .catch((error) => {
+              ToastAndroid.show("No se pudo abrir el archivo", ToastAndroid.SHORT);
+            });
+        }
+      },
+      requestPermissions: Platform.OS === 'ios'
+    });
+  }, []);
 
+  const downloadPdf = () => {
     const showToast = (message) => {
       ToastAndroid.show(message, ToastAndroid.SHORT);
     };
 
     // Path de destino para guardar el PDF en el dispositivo
-    const savePath = `${RNFetchBlob.fs.dirs.DownloadDir}/${applier.fileName}.pdf`;
-
+    const savePath = `${RNFetchBlob.fs.dirs.DownloadDir}/${applier.fileName}`;
+    console.log('savePath:', savePath);
     // Decodificar el base64 y guardar el PDF en el dispositivo
     RNFetchBlob.fs
       .writeFile(savePath, applier.cv, "base64")
       .then(() => {
-        showToast("Descarga completada");
+        PushNotification.localNotification({
+          channelId: "download-channel", // Asegúrate de que coincida con el ID del canal creado
+          title: "Descarga completada",
+          message: `El documento se ha descargado`,
+          data: { filePath: savePath },
+        });
       })
       .catch((error) => {
         showToast("Hubo un error en la descarga");
@@ -177,7 +200,6 @@ export const ApplierDetailsScreen = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: "100%",
     width: 300,
     height: 70,
     marginTop: 20,
