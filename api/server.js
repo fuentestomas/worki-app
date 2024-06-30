@@ -13,7 +13,7 @@ mongoose.connect('mongodb+srv://dbuser:worki@workicluster.odp9wzi.mongodb.net/wo
 });
 
 // Configuración del puerto
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 10500;
 app.set('port', PORT);
 
 // Creación del servidor HTTP
