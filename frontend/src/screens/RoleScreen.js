@@ -30,6 +30,7 @@ export const RoleScreen = ({ route, navigation }) => {
       userRegister.fullName = googleUser.name;
       userRegister.emailAddress = googleUser.email;
       userRegister.uid = googleUser.uid;
+      userRegister.pushToken = googleUser.pushToken;
     }
     navigation.navigate("RegisterScreen", {
       role,
