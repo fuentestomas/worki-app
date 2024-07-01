@@ -6,6 +6,7 @@ const firebaseAuth = require("firebase-admin/auth");
 require('dotenv').config()
 
 //const serviceAccount = require("../../firebase/worki.json");
+console.log("env", process.env.UNIVERSE_DOMAIN)
 const serviceAccount = {
     type: process.env.TYPE,
     project_id: process.env.PROJECT_ID,
