@@ -12,13 +12,13 @@ export const ChatsScreen = ({ navigation }) => {
 
   useFocusEffect(
     React.useCallback(() => {
+      setIsLoading(true);
       getChats();
     }, [isFocused])
   );
 
   const getChats = async () => {
     const data = await getUserChats();
-    console.log("server chats", data);
     setChatsList(data);
     setIsLoading(false);
   };
@@ -85,7 +85,7 @@ const Item = ({ item, navigation }) => {
         backgroundColor: "white",
       }}
       onPress={() => {
-        navigation.navigate("StackNavigator", {
+        navigation.push("StackNavigator", {
           screen: "ChatScreen",
           params: {
             fullName: item.chatUser.fullName,

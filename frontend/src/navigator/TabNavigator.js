@@ -38,7 +38,9 @@ export const TabNavigator = () => {
         tabBarActiveTintColor: Colors.blue40,
         tabBarInactiveTintColor: "black",
         headerShown: false, // Oculta el encabezado si es necesario
+        
       })}
+      backBehavior="history"
     >
       <Tab.Screen name="Chats" component={ChatsScreen} />
       <Tab.Screen name="Home" component={HomeScreen} />

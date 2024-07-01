@@ -32,7 +32,7 @@ export const ApplierDetailsScreen = ({ navigation, route }) => {
     };
 
     // Path de destino para guardar el PDF en el dispositivo
-    const savePath = `${RNFetchBlob.fs.dirs.DownloadDir}/${applier.fileName}`;
+    const savePath = `${RNFetchBlob.fs.dirs.DownloadDir}/${applier.userId.fullName}-${Math.random()}.pdf`;
     console.log('savePath:', savePath);
     // Decodificar el base64 y guardar el PDF en el dispositivo
     RNFetchBlob.fs
