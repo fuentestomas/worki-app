@@ -29,8 +29,9 @@ const ProfileScreen = ({ navigation }) => {
   );
 
   const getData = async () => {
-    const { id } = await loadFromLocalStorage("auth");
+    const { id, uid } = await loadFromLocalStorage("auth");
     const data = await getUserInfo(id);
+    data.uid = uid;
     if (data) {
       setUser(data);
       setIsLoading(false);
@@ -67,7 +68,9 @@ const ProfileScreen = ({ navigation }) => {
             <View style={styles.profileContainer}>
               <Image
                 source={{
-                  uri: `data:image/jpeg;base64,${user.photo}`,
+                  uri: user.uid
+                    ? user.photo
+                    : `data:image/jpeg;base64,${user.photo}`,
                 }}
                 style={styles.profileImage}
               />

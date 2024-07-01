@@ -1,5 +1,12 @@
 import { useContext, useEffect, useState } from "react";
-import { SafeAreaView, Text, TextInput, ScrollView, View, Image } from "react-native";
+import {
+  SafeAreaView,
+  Text,
+  TextInput,
+  ScrollView,
+  View,
+  Image,
+} from "react-native";
 import { Button, Colors, Switch } from "react-native-ui-lib";
 import { postUserRegister } from "../services/user";
 import { AuthContext } from "../context/AuthContext";
@@ -47,7 +54,7 @@ export const RegisterForm = ({ role, navigation, initialUserRegister }) => {
       email: data.emailAddress,
       name: data.fullName,
       role: data.roles[0],
-    }
+    };
 
     login(userObj);
     saveToLocalStorage("auth", userObj);
@@ -73,7 +80,6 @@ export const RegisterForm = ({ role, navigation, initialUserRegister }) => {
   };
 
   const selectImage = async () => {
-
     try {
       const res = await DocumentPicker.pick({
         type: [DocumentPicker.types.images],
@@ -120,12 +126,13 @@ export const RegisterForm = ({ role, navigation, initialUserRegister }) => {
             Registro {getRole()}
           </Text>
         </View>
-        <View style={{ alignItems: "center" }}>
+        {!userRegister.uid && (
+          <View style={{ alignItems: "center" }}>
             <View style={{ marginTop: 42 }}>
               <Text
                 style={{ fontSize: 17, color: "black", textAlign: "center" }}
               >
-                Cargar imagen de la publicación
+                Cargar foto de perfil
               </Text>
             </View>
 
@@ -164,15 +171,21 @@ export const RegisterForm = ({ role, navigation, initialUserRegister }) => {
               />
             </View>
           </View>
-        { !userRegister?.uid && (
+        )}
+
+        {!userRegister?.uid && (
           <View>
             <View style={{ paddingHorizontal: 25, marginTop: 45 }}>
               <Text style={{ paddingLeft: 3, color: "black", fontWeight: 600 }}>
-                {role === "company" ? "Nombre de la organizacion" : "Nombre completo"}
+                {role === "company"
+                  ? "Nombre de la organizacion"
+                  : "Nombre completo"}
               </Text>
               <TextInput
                 placeholder={
-                  role === "company" ? "Nombre de la organizacion" : "Nombre completo"
+                  role === "company"
+                    ? "Nombre de la organizacion"
+                    : "Nombre completo"
                 }
                 placeholderTextColor={"gray"}
                 style={styles.input}
@@ -181,7 +194,9 @@ export const RegisterForm = ({ role, navigation, initialUserRegister }) => {
               />
             </View>
             <View style={{ paddingHorizontal: 25, paddingTop: 10 }}>
-              <Text style={{ paddingLeft: 3, color: "black", fontWeight: "600" }}>
+              <Text
+                style={{ paddingLeft: 3, color: "black", fontWeight: "600" }}
+              >
                 Email
               </Text>
               <TextInput
@@ -189,12 +204,16 @@ export const RegisterForm = ({ role, navigation, initialUserRegister }) => {
                 placeholderTextColor={"gray"}
                 keyboardType="email-address"
                 style={styles.input}
-                onChangeText={(text) => onChange("emailAddress", text, "string")}
+                onChangeText={(text) =>
+                  onChange("emailAddress", text, "string")
+                }
                 value={userRegister?.emailAddress || ""}
               />
             </View>
             <View style={{ paddingHorizontal: 25, paddingTop: 10 }}>
-              <Text style={{ paddingLeft: 3, color: "black", fontWeight: "600" }}>
+              <Text
+                style={{ paddingLeft: 3, color: "black", fontWeight: "600" }}
+              >
                 Contraseña
               </Text>
               <TextInput
@@ -207,7 +226,6 @@ export const RegisterForm = ({ role, navigation, initialUserRegister }) => {
               />
             </View>
           </View>
-          
         )}
         <View style={{ paddingHorizontal: 25, paddingTop: 10 }}>
           <Text style={{ paddingLeft: 3, color: "black", fontWeight: "600" }}>

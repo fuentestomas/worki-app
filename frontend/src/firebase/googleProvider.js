@@ -76,6 +76,7 @@ export const onGoogleSignIn = async (login, navigation) => {
       if (data) {
         data.role = data.roles[0];
         data.id = data._id.toString();
+        data.uid = result.uid;
         login(data);
         saveToLocalStorage("auth", data);
         navigation.navigate("TabNavigator", {
