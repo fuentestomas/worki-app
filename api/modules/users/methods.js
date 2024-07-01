@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const admin = require('firebase-admin');
 const firebaseAuth = require("firebase-admin/auth");
+const { privateKey } = JSON.parse(process.env.private_key);
 require('dotenv').config()
 
 //const serviceAccount = require("../../firebase/worki.json");
@@ -11,7 +12,7 @@ const serviceAccount = {
     type: process.env.TYPE,
     project_id: process.env.PROJECT_ID,
     private_key_id: process.env.PRIVATE_KEY_ID,
-    private_key: process.env.PRIVATE_KEY,
+    privateKey,
     client_email: process.env.CLIENT_EMAIL,
     client_id: process.env.CLIENT_ID,
     auth_uri: process.env.AUTH_URI,
