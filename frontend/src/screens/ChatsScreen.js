@@ -112,7 +112,11 @@ const Item = ({ item, navigation }) => {
         >
           {item.chatUser.photo ? (
             <Image
-              source={{ uri: `data:image/jpeg;base64,${item.chatUser.photo}` }}
+              source={{
+                uri: item.chatUser.isGoogle
+                  ? item.chatUser.photo
+                  : `data:image/jpeg;base64,${item.chatUser.photo}`,
+              }}
               style={{
                 width: 40,
                 height: 40,

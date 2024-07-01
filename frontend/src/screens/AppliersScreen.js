@@ -110,7 +110,9 @@ export const AppliersScreen = ({ navigation, route }) => {
             {applier.userId.photo && (
               <Image
                 source={{
-                  uri: `data:image/jpeg;base64,${applier.userId.photo}`,
+                  uri: applier.isGoogle
+                    ? applier.userId.photo
+                    : `data:image/jpeg;base64,${applier.userId.photo}`,
                 }}
                 style={{
                   width: "100%",

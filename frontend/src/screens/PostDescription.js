@@ -158,7 +158,7 @@ export const PostDescription = ({ navigation, route }) => {
                     />
                   )}
                 </View>
-                <View style={{ marginLeft: 16 }}>
+                <View style={{ marginLeft: 16, flex: 1 }}>
                   <Text
                     style={{
                       color: "black",

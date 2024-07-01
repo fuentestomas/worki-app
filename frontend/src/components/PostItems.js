@@ -45,7 +45,7 @@ export const PostItems = ({ item, navigation }) => {
         />
         <View
           style={{
-            width: 90,
+            width: 140,
             height: 35,
             backgroundColor: Colors.blue30,
             borderRadius: 5,
