@@ -261,41 +261,43 @@ export const PostDescription = ({ navigation, route }) => {
           </View>
         </ScrollView>
       )}
-      <View
-        style={{
-          width: "100%",
-          alignItems: "center",
-          position: "absolute",
-          bottom: 25,
-        }}
-      >
-        <View style={{ width: "70%" }}>
-          <Button
-            style={{
-              borderRadius: 15,
-              paddingTop: 12,
-              paddingBottom: 9,
-              shadowColor: "gray",
-              shadowRadius: 5,
-              shadowOpacity: 0.28,
-              flexDirection: "row",
-              shadowColor: "#000000",
-              shadowOpacity: 0.5,
-              elevation: Platform.OS == "android" ? 5 : 0,
-            }}
-            labelStyle={{
-              fontSize: 20,
-              color: Colors.white,
-              fontFamily: "Avenir-Medium",
-            }}
-            label={validateButtonLabel()}
-            backgroundColor={Colors.blue20}
-            size={Button.sizes.large}
-            disabled={isUserApplied.status === "applied"}
-            onPress={() => validateNextView()}
-          />
+      {!isLoading && (
+        <View
+          style={{
+            width: "100%",
+            alignItems: "center",
+            position: "absolute",
+            bottom: 25,
+          }}
+        >
+          <View style={{ width: "70%" }}>
+            <Button
+              style={{
+                borderRadius: 15,
+                paddingTop: 12,
+                paddingBottom: 9,
+                shadowColor: "gray",
+                shadowRadius: 5,
+                shadowOpacity: 0.28,
+                flexDirection: "row",
+                shadowColor: "#000000",
+                shadowOpacity: 0.5,
+                elevation: Platform.OS == "android" ? 5 : 0,
+              }}
+              labelStyle={{
+                fontSize: 20,
+                color: Colors.white,
+                fontFamily: "Avenir-Medium",
+              }}
+              label={validateButtonLabel()}
+              backgroundColor={Colors.blue20}
+              size={Button.sizes.large}
+              disabled={isUserApplied.status === "applied"}
+              onPress={() => validateNextView()}
+            />
+          </View>
         </View>
-      </View>
+      )}
     </SafeAreaView>
   );
 };
