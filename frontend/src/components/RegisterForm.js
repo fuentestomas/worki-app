@@ -49,11 +49,12 @@ export const RegisterForm = ({ role, navigation, initialUserRegister }) => {
       // Token
       // token: result.idToken,
       // User info
-      // uid: result.uid,
+      uid: userRegister.uid,
       id: data._id,
       email: data.emailAddress,
       name: data.fullName,
       role: data.roles[0],
+      photo: data.photo,
     };
 
     login(userObj);

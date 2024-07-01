@@ -36,7 +36,7 @@ export const ChatsScreen = ({ navigation }) => {
           />
         </View>
       ) : (
-        <View>
+        <View style={{ padding: 0, flex: 1 }}>
           <View
             style={{
               width: "100%",

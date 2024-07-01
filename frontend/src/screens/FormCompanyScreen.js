@@ -53,11 +53,12 @@ export const FormCompanyScreen = ({ role, navigation, route }) => {
       // Token
       // token: result.idToken,
       // User info
-      // uid: result.uid,
+      uid: userRegister.uid,
       id: data._id,
       email: data.emailAddress,
       name: data.fullName,
       role: data.roles[0],
+      photo: data.photo,
     }
     login(userObj);
     saveToLocalStorage("auth", userObj);
