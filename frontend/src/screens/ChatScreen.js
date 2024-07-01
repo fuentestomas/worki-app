@@ -72,10 +72,9 @@ export const ChatScreen = ({ navigation, route }) => {
     console.log("chatId", chatId);
     if (chatId !== "none") {
       const data = await getChatInfo(chatId);
-      console.log("server messages", data);
       setMessages(data);
-      setIsLoading(false);
     }
+    setIsLoading(false);
   };
 
   const sendMessage = async () => {
