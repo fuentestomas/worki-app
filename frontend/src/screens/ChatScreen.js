@@ -43,7 +43,7 @@ export const ChatScreen = ({ navigation, route }) => {
     const { id } = await loadFromLocalStorage("auth");
 
     if (!socketRef.current) {
-      socketRef.current = io("http://localhost:3000");
+      socketRef.current = io("https://worki-app-885e460b0fc2.herokuapp.com/");
 
       socketRef.current.on("connect", () => {
         console.log("Connected to socket server with id", socketRef.current.id);

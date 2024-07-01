@@ -10,6 +10,7 @@ export let workerRegister = {
     avgPayRate: "",
     category: "",
     job: "",
+    pushToken: "",
 }
 
 export const backupWorkerRegister = {
@@ -24,6 +25,7 @@ export const backupWorkerRegister = {
     avgPayRate: "",
     category: "",
     job: "",
+    pushToken: "",
 }
 
 export let particularRegister = {
@@ -34,6 +36,7 @@ export let particularRegister = {
     roles: ["person"],
     phoneNumber: "",
     addresses: [""],
+    pushToken: "",
 }
 
 export const backupParticularRegister = {
@@ -44,6 +47,7 @@ export const backupParticularRegister = {
     roles: ["person"],
     phoneNumber: "",
     addresses: [""],
+    pushToken: "",
 }
 
 export let companyRegister = {
@@ -57,6 +61,7 @@ export let companyRegister = {
     description: "",
     avgPayRate: "",
     category: "",
+    pushToken: "",
 }
 
 export const backupCompanyRegister = {
@@ -70,6 +75,7 @@ export const backupCompanyRegister = {
     description: "",
     avgPayRate: "",
     category: "",
+    pushToken: "",
 }
 
 export const resetData = () => {

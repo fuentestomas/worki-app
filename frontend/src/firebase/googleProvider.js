@@ -9,6 +9,7 @@ import {
 } from "../hooks/useLocalStorage";
 
 import { getUserInfo } from "../services/user";
+import { getFcmToken } from "./pushNotification";
 
 GoogleSignin.configure({
   webClientId:
@@ -60,6 +61,7 @@ export const onGoogleSignIn = async (login, navigation) => {
       email: result.email,
       name: result.displayName,
       photo: result.photoURL,
+      pushToken: await getFcmToken()
     };
 
     //login(authObj);
