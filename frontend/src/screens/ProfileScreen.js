@@ -10,29 +10,23 @@ import {
 } from "react-native";
 import { Colors } from "react-native-ui-lib";
 import logout from "../assets/img/logout.png";
-import worker from "../assets/img/worker.png";
 import { signOutFromGoogle } from "../firebase/googleProvider";
 import { getUserInfo } from "../services/user";
 import LoaderKit from "react-native-loader-kit";
 import { loadFromLocalStorage } from "../hooks/useLocalStorage";
+import { useFocusEffect, useIsFocused } from "@react-navigation/native";
 
-const user = {
-  photoURL: worker,
-  firstName: "John",
-  lastName: "Doe",
-  jobTitle: "Mozo",
-  location: "Buenos Aires, Argentina",
-  email: "john.doe@example.com",
-  phone: "+1234567890",
-  expectedSalary: "$2000 - $3000",
-  fieldOfInterest: "Gastronomía",
-};
 const ProfileScreen = ({ navigation }) => {
   const [user, setUser] = useState({});
   const [isLoading, setIsLoading] = useState(true);
-  useEffect(() => {
-    getData();
-  }, []);
+  const isFocused = useIsFocused();
+
+  useFocusEffect(
+    React.useCallback(() => {
+      setIsLoading(true);
+      getData();
+    }, [isFocused])
+  );
 
   const getData = async () => {
     const { id } = await loadFromLocalStorage("auth");
@@ -40,7 +34,6 @@ const ProfileScreen = ({ navigation }) => {
     if (data) {
       setUser(data);
       setIsLoading(false);
-      console.log("data:", data);
     }
   };
 
@@ -80,9 +73,7 @@ const ProfileScreen = ({ navigation }) => {
               />
               <View style={styles.infoContainer}>
                 <Text style={styles.name}>{`${user.fullName}`}</Text>
-                {user.job && (
-                  <Text style={styles.jobTitle}>{user.job}</Text>
-                )}
+                {user.job && <Text style={styles.jobTitle}>{user.job}</Text>}
                 <Text style={styles.location}>{user.address}</Text>
               </View>
             </View>
@@ -123,7 +114,7 @@ const ProfileScreen = ({ navigation }) => {
                     {` ${user.avgPayRate}`}
                   </Text>
                 )}
-                {user.roles[0] === "business" &&
+                {user.roles[0] === "business" && (
                   <Text style={styles.sectionText}>
                     <Text
                       style={{
@@ -136,7 +127,7 @@ const ProfileScreen = ({ navigation }) => {
                     </Text>
                     {` ${user.category}`}
                   </Text>
-                }
+                )}
               </View>
             </View>
             <TouchableOpacity
@@ -206,6 +197,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   infoContainer: {
+    flex: 1,
     justifyContent: "center",
     color: "black",
     fontFamily: "Avenir-Medium",

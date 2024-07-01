@@ -22,7 +22,7 @@ export const PostItems = ({ item, navigation }) => {
   return (
     <TouchableOpacity
       onPress={() => {
-        navigation.navigate("StackNavigator", {
+        navigation.push("StackNavigator", {
           screen: "PostDescription",
           params: {
             idPost: item._id,

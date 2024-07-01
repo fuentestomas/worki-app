@@ -178,13 +178,14 @@ export const FormPost = ({ navigation, route }) => {
 
   return (
     <View style={{ flex: 1 }}>
-      <View style={{ position: "absolute", marginTop: 30, marginLeft: 20 }}>
+      <View style={{ position: "absolute", marginTop: 30, marginLeft: 15 }}>
         <TouchableOpacity
           onPress={() =>
             navigation.navigate("TabNavigator", {
               screen: "Home",
             })
           }
+          style={{padding:5}}
         >
           <View style={{ width: 25, height: 25 }}>
             <Image
